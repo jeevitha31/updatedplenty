@@ -403,6 +403,8 @@ class CallbackController extends Controller
     public function getOrderDetails()
     {
         $order = $this->transaction->getTransactionData('tid', $this->aryCaptureParams['shop_tid']);
+        
+        $orderId= (!empty($this->aryCaptureParams['order_no'])) ? $this->aryCaptureParams['order_no'] : '';
 
         if(!empty($order))
         {
@@ -445,8 +447,16 @@ class CallbackController extends Controller
             }
         }
         else
-        {
-            return 'Transaction mapping failed';
+		{ 
+			if(!empty($orderId))
+			{
+				 $order_obj = $this->orderRepository->findOrderById($orderId);
+				 $this->getLogger(__METHOD__)->error('callbackscript orderobject',  $order_obj);
+			
+			}
+			else{
+					return 'Transaction mapping failed';
+				}
         }
 
         return $orderObj;
