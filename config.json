@@ -10,7 +10,7 @@
                     "label": "Config.activationKeyLabel",
                     "options": {
                     "tooltip": "Config.activationKeyTooltip",
-                     "defaultValue": "Novalet GLobal configuration values"
+                     "defaultValue": ""
                     }
                 },
                 "vendor_id": {
