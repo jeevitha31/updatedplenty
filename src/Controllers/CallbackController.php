@@ -24,6 +24,7 @@ use Novalnet\Services\TransactionService;
 use Plenty\Plugin\Log\Loggable;
 use Plenty\Plugin\Mail\Contracts\MailerContract;
 use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
+use \Plenty\Modules\Authorization\Services\AuthHelper;
 use \stdClass;
 
 /**
@@ -417,7 +418,7 @@ class CallbackController extends Controller
             $orderObj                     = pluginApp(stdClass::class);
 	$authHelper = pluginApp(AuthHelper::class);
         $authHelper->processUnguarded(
-                function () use ($payment, $orderId) {
+                function () use ($orderId) {
 		$order_object = $this->orderRepository->findOrderById($orderId);
 		$this->getLogger(__METHOD__)->error('callbackscript orderobject',  $order_obj);
 		});
