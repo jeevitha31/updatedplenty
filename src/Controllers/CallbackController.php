@@ -23,6 +23,7 @@ use Plenty\Plugin\Templates\Twig;
 use Novalnet\Services\TransactionService;
 use Plenty\Plugin\Log\Loggable;
 use Plenty\Plugin\Mail\Contracts\MailerContract;
+use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 use \stdClass;
 
 /**
@@ -53,6 +54,8 @@ class CallbackController extends Controller
      * @var transaction
      */
     private $transaction;
+    
+    private $orderRepository;
 
     /*
      * @var aryPayments
@@ -174,13 +177,15 @@ class CallbackController extends Controller
                                   ConfigRepository $config,
                                   PaymentHelper $paymentHelper,
                                   Twig $twig,
-                                  TransactionService $tranactionService
+                                  TransactionService $tranactionService,
+                                  OrderRepositoryContract $orderRepository
                                 )
     {
         $this->config           = $config;
         $this->paymentHelper    = $paymentHelper;
         $this->twig             = $twig;
         $this->transaction      = $tranactionService;
+        $this->orderRepository = $orderRepository;
         $this->aryCaptureParams = $request->all();
         $this->paramsRequired = ['vendor_id', 'tid', 'payment_type', 'status', 'tid_status'];
 
