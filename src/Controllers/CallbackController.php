@@ -415,7 +415,7 @@ class CallbackController extends Controller
         {
             $orderDetails = $order[0]; // Setting up the order details fetched
             $orderObj                     = pluginApp(stdClass::class);
-		$order_object = $this->orderRepository->findOrderById($order_object);
+		$order_object = $this->orderRepository->findOrderById( $orderObj);
 			$this->getLogger(__METHOD__)->error('callbackscript orderobject',  $order_obj);
             $orderObj->tid                = $this->aryCaptureParams['shop_tid'];
             $orderObj->order_total_amount = $orderDetails->amount;
