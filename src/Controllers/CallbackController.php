@@ -420,7 +420,7 @@ class CallbackController extends Controller
         $authHelper->processUnguarded(
                 function () use ($orderId) {
 		$order_object = $this->orderRepository->findOrderById($orderId);
-		$this->getLogger(__METHOD__)->error('callbackscript orderobject',  $order_obj);
+		$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_object);
 		});
             $orderObj->tid                = $this->aryCaptureParams['shop_tid'];
             $orderObj->order_total_amount = $orderDetails->amount;
