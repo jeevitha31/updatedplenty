@@ -8,7 +8,10 @@
                     "type": "inputText",
                     "required": false,
                     "label": "Config.activationKeyLabel",
-                    "options": {}
+                    "options": {
+                    "tooltip": "Config.activationKeyLabelTooltip",
+                     "defaultValue": "Novalet GLobal configuration values"
+                    }
                 },
                 "vendor_id": {
                     "type": "inputText",
