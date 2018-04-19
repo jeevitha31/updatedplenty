@@ -9,7 +9,7 @@
                     "required": false,
                     "label": "Config.activationKeyLabel",
                     "options": {
-                    "tooltip": "Config.activationKeyLabelTooltip",
+                    "tooltip": "Config.activationKeyTooltip",
                      "defaultValue": "Novalet GLobal configuration values"
                     }
                 },
