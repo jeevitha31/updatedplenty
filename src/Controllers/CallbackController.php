@@ -565,9 +565,18 @@ class CallbackController extends Controller
         return $this->twig->render('Novalnet::callback.callback', ['comments' => $templateData]);
     }
     
-    public function handleCommunicationBreak($order_obj)
+   public function handleCommunicationBreak($orderObj)
+    
     {
-		 $this->getLogger(__METHOD__)->error('handlecommunication break', $order_obj);
-		return 'Novalnet Callvback recieved: communication failure';
+		$property = $orderObj->properties[0];
+	    $this->getLogger(__METHOD__)->error('handlecommunication:property', $property);
+		$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
+		
+         $this->getLogger(__METHOD__)->error('handlecommunication:payment_type', $payment_type);
+            if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
+            {
+				 $this->getLogger(__METHOD__)->error('handlecommunication:ifcondition', $property);
+				return 'Novalnet Callback recieved: communication failure';
+			}
 	}
 }
