@@ -291,7 +291,7 @@ class PaymentController extends Controller
             return $this->response->redirectTo('checkout');
         }
     }
-    public function redirectPayment()
+    public function paycall()
     {
 	$requestData = $this->request->all();
 	
