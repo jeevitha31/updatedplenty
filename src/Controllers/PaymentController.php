@@ -293,20 +293,20 @@ class PaymentController extends Controller
     }
     public function paycall()
     {
-	$requestData = $this->request->all();
+	//$requestData = $this->request->all();
 	
-	$paymentRequestData = $this->sessionStorage->getPlugin()->getValue('nnPaymentData');
-	 $this->getLogger(__METHOD__)->error('cc3d', $paymentRequestData);
-	$orderNo = $this->sessionStorage->getPlugin()->getValue('nnOrderNo');
-	$paymentRequestData['order_no'] = $orderNo;
+	//$paymentRequestData = $this->sessionStorage->getPlugin()->getValue('nnPaymentData');
+	// $this->getLogger(__METHOD__)->error('cc3d', $paymentRequestData);
+	//$orderNo = $this->sessionStorage->getPlugin()->getValue('nnOrderNo');
+	//$paymentRequestData['order_no'] = $orderNo;
    
-    $paymentUrl = $this->sessionStorage->getPlugin()->getValue('nnPaymentUrl');
+    //$paymentUrl = $this->sessionStorage->getPlugin()->getValue('nnPaymentUrl');
 	
-    return $content = $this->twig->render('Novalnet::NovalnetPaymentRedirectForm', [
-                                                                'formData'     => $paymentRequestData,
-                                                                'nnPaymentUrl' => $paymentUrl
-                                   ]);
-
+   // return $content = $this->twig->render('Novalnet::NovalnetPaymentRedirectForm', [
+                                                               // 'formData'     => $paymentRequestData,
+                                                             //   'nnPaymentUrl' => $paymentUrl
+                               //    ]);
+ return $this->response->redirectTo('confirmation');
                      
 	}
     
