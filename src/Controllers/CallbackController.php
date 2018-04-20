@@ -463,6 +463,7 @@ class CallbackController extends Controller
                 function () use ($orderId) {
 					$order_obj = $this->orderRepository->findOrderById($orderId);
 					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
+			return $order_obj;
 				});
 				 
 				 $this->handleCommunicationBreak($order_ref);
