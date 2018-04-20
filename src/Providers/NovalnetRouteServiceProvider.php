@@ -32,9 +32,9 @@ class NovalnetRouteServiceProvider extends RouteServiceProvider
     public function map(Router $router)
     {
         // Get the Novalnet success, cancellation and callback URLs
-        $router->post('payment/novalnet/callback', 'Novalnet\Controllers\CallbackController@processCallback');
+        $router->match(['post', 'get'],'payment/novalnet/callback', 'Novalnet\Controllers\CallbackController@processCallback');
         $router->post('payment/novalnet/processPayment' , 'Novalnet\Controllers\PaymentController@processPayment' );
         $router->post('payment/novalnet/paymentResponse' , 'Novalnet\Controllers\PaymentController@paymentResponse' );
-        $router->get('payment/novalnet/redirectPayment' , 'Novalnet\Controllers\PaymentController@redirectPayment' );
+         $router->match(['post', 'get'],'payment/novalnet/redirectPayment' , 'Novalnet\Controllers\PaymentController@redirectPayment' );
     }
 }
