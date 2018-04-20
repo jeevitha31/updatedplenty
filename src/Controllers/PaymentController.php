@@ -303,9 +303,9 @@ class PaymentController extends Controller
     $paymentUrl = $this->sessionStorage->getPlugin()->getValue('nnPaymentUrl');
 	
    return $content = $this->twig->render('Novalnet::NovalnetPaymentRedirectForm', [
-                                                               // 'formData'     => $paymentRequestData,
-                                                             //   'nnPaymentUrl' => $paymentUrl
-                               //    ]);
+                                                               'formData'     => $paymentRequestData,
+                                                                'nnPaymentUrl' => $paymentUrl
+                                   ]);
  //return $this->response->redirectTo('confirmation');
                      
 	}
