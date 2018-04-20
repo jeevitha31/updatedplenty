@@ -568,8 +568,10 @@ class CallbackController extends Controller
   public function handleCommunicationBreak($orderObj)
     
     {
+	  $ordertype = array_map('get_object_vars',$orderObj->properties);
+	$order_ref= array_column($ordertype,'value','typeId');
 		
-	    $this->getLogger(__METHOD__)->error('handlecommunication:properties', $orderObj);
+	    $this->getLogger(__METHOD__)->error('handlecommunication:properties', $order_ref);
 		
 	}
 }
