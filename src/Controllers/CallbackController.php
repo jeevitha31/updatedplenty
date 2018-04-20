@@ -569,24 +569,27 @@ class CallbackController extends Controller
     
     {
 		$property = $orderObj->properties[0];
+		$ordertype = array_map('get_object_vars',$orderObj->properties);
+		$order_ref= array_column($ordertype,'value','typeId');
+		
 		//$order_type= array_column($orderObj->properties,'typeId','value');
-		foreach($orderObj->properties as $property)
-		{
-			 if($property->typeId == '3' && $paymentHelper->isNovalnetPaymentMethod($property->value))
-            {
-				$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
-				$this->getLogger(__METHOD__)->error('handlecommunication:property', $payment_type);
-				return $payment_type;
-			}
-		}
-	    $this->getLogger(__METHOD__)->error('handlecommunication:properties', $payment_type);
+		//foreach($orderObj->properties as $property)
+		//~ {
+			 //~ if($property->typeId == '3' && $paymentHelper->isNovalnetPaymentMethod($property->value))
+            //~ {
+				//~ $payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
+				//~ $this->getLogger(__METHOD__)->error('handlecommunication:property', $payment_type);
+				//~ return $payment_type;
+			//~ }
+		//~ }
+	    $this->getLogger(__METHOD__)->error('handlecommunication:properties', $order_ref);
 		//$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
 		
-         $this->getLogger(__METHOD__)->error('handlecommunication:payment_type', $payment_type);
-            if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
-            {
-				 $this->getLogger(__METHOD__)->error('handlecommunication:ifcondition', $property);
-				return 'Novalnet Callback recieved: communication failure';
-			}
+         //~ $this->getLogger(__METHOD__)->error('handlecommunication:payment_type', $payment_type);
+            //~ if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
+            //~ {
+				 //~ $this->getLogger(__METHOD__)->error('handlecommunication:ifcondition', $property);
+				//~ return 'Novalnet Callback recieved: communication failure';
+			//~ }
 	}
 }
