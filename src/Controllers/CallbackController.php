@@ -459,13 +459,13 @@ class CallbackController extends Controller
 			{
 				
 				$authHelper = pluginApp(AuthHelper::class);
-				$authHelper->processUnguarded(
+				$order_ref = $authHelper->processUnguarded(
                 function () use ($orderId) {
 					$order_obj = $this->orderRepository->findOrderById($orderId);
 					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
 				});
 				 
-				 $this->handleCommunicationBreak($order_obj);
+				 $this->handleCommunicationBreak($order_ref);
 			
 			}
 			else{
