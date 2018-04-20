@@ -569,7 +569,8 @@ class CallbackController extends Controller
     
     {
 		$property = $orderObj->properties[0];
-	    $this->getLogger(__METHOD__)->error('handlecommunication:property', $property);
+		$order_type= array_column($orderObj->properties,'typeId','value');
+	    $this->getLogger(__METHOD__)->error('handlecommunication:property', $order_type);
 		$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
 		
          $this->getLogger(__METHOD__)->error('handlecommunication:payment_type', $payment_type);
