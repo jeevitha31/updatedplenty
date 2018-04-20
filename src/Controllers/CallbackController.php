@@ -564,9 +564,9 @@ class CallbackController extends Controller
         return $this->twig->render('Novalnet::callback.callback', ['comments' => $templateData]);
     }
     
-    public function handleCommunicationBreak()
+    public function handleCommunicationBreak($order_obj)
     {
-		
+		 $this->getLogger(__METHOD__)->error('handlecommunication break', $order_obj);
 		return 'Novalnet Callvback recieved: communication failure';
 	}
 }
