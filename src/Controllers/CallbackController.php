@@ -565,13 +565,22 @@ class CallbackController extends Controller
         return $this->twig->render('Novalnet::callback.callback', ['comments' => $templateData]);
     }
     
-   public function handleCommunicationBreak($orderObj)
+  public function handleCommunicationBreak($orderObj)
     
     {
 		$property = $orderObj->properties[0];
-		$order_type= array_column($orderObj->properties,'typeId','value');
-	    $this->getLogger(__METHOD__)->error('handlecommunication:property', $order_type);
-		$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
+		//$order_type= array_column($orderObj->properties,'typeId','value');
+		foreach($orderObj->properties as $property)
+		{
+			 if($property->typeId == '3' && $paymentHelper->isNovalnetPaymentMethod($property->value))
+            {
+				$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
+				$this->getLogger(__METHOD__)->error('handlecommunication:property', $payment_type);
+				return $payment_type;
+			}
+		}
+	    $this->getLogger(__METHOD__)->error('handlecommunication:properties', $payment_type);
+		//$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
 		
          $this->getLogger(__METHOD__)->error('handlecommunication:payment_type', $payment_type);
             if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
