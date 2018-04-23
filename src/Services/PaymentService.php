@@ -105,10 +105,13 @@ class PaymentService
      *
      * @return array
      */
-    public function executePayment($requestData)
+    public function executePayment($requestData,$callbackfailure = false)
     {
         try {
+			
             $requestData['amount'] = (float) $requestData['amount'];
+            if(!$callbackfailure)
+            {
 
             if((in_array($requestData['payment_id'], ['34','78']) && in_array($requestData['tid_status'], ['86','90','85'])))
             {
@@ -137,6 +140,11 @@ class PaymentService
                 $requestData['order_status'] = trim($this->paymentHelper->getPaymentStatusByConfig($requestData['mop'], '_order_completion_status'));
                 $requestData['paid_amount'] = $requestData['amount'];
             }
+		} else
+			{
+			$requestData['order_status'] = trim($this->config->get('Novalnet.order_cancel_status'));
+			$requestData['paid_amount'] = '0';
+			}
 
             $transactionComments = $this->getTransactionComments($requestData);
             $this->paymentHelper->createPlentyPayment($requestData);
@@ -593,7 +601,7 @@ class PaymentService
     */
     public function getRedirectPaymentUrl()
     {
-        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/payment/novalnet/onlineBank';
+        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/payment/novalnet/redirectPayment';
     }
     
     
