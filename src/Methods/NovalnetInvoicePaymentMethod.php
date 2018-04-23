@@ -57,7 +57,7 @@ class NovalnetInvoicePaymentMethod extends PaymentMethodService
      */
     public function isActive():bool
     {
-        return (bool)(($this->configRepository->get('Novalnet.invoice_payment_active') == 'true') && is_numeric($this->paymentHelper->getNovalnetConfig('vendor_id')) && !empty($this->paymentHelper->getNovalnetConfig('auth_code')) && is_numeric($this->paymentHelper->getNovalnetConfig('product_id')) && is_numeric($this->paymentHelper->getNovalnetConfig('tariff_id')) && !empty($this->paymentHelper->getNovalnetConfig('access_key')));
+        return true;
     }
 
     /**
