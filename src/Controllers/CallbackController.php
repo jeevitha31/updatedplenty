@@ -524,7 +524,7 @@ class CallbackController extends Controller
         $insertTransactionLog['ref_tid']         = $this->aryCaptureParams['tid'];
         $insertTransactionLog['payment_name']    = $txnHistory->paymentName;
         $insertTransactionLog['order_no']        = $txnHistory->orderNo;
-
+ $this->getLogger(__METHOD__)->error('handlecommunication', $insertTransactionLog);
         $this->transaction->saveTransaction($insertTransactionLog);
     }
 
