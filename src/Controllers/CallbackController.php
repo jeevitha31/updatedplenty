@@ -477,6 +477,8 @@ class CallbackController extends Controller
 				$comment = $this->handleCommunicationBreak($order_ref);
 				if(is_string($comment))
 				{
+					
+					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $comment);
 					return $this->renderTemplate($comment);
 				}
 			
@@ -597,7 +599,7 @@ class CallbackController extends Controller
                          $transactionData->paymentName = $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']);
                             
                          $transactionData->orderNo  = $requestData['order_no'];
-                          $transactionData->order_total_amount = $requestData['amount'] * 100;
+                          $transactionData->order_total_amount = $requestData['amount'];
 							
 					
 					
