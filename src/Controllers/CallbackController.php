@@ -577,17 +577,17 @@ class CallbackController extends Controller
     
     {
 		
-		 foreach($orderObj->properties as $property)
-			{
+		foreach($orderObj->properties as $property)
+		{
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
-				{
-					$requestData = $this->aryCaptureParams;
-					$requestData['mop']= $property->value;
-					$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
-					$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
+			{
+				$requestData = $this->aryCaptureParams;
+				$requestData['mop']= $property->value;
+				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
+				$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
 					
 					
-                        $transactionData = [
+                $transactionData = [
                             'amount'           => $requestData['amount'] * 100,
                             'callback_amount'  => $requestData['amount'] * 100,
                             'tid'              => $requestData['tid'],
@@ -595,33 +595,33 @@ class CallbackController extends Controller
                             'payment_name'     => $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']),
                             'payment_type'     => $requestData['payment_type'],
                             'order_no'         => $requestData['order_no'],
-                        ];
+							];
 					
 					
-			if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
+				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
 				{
 					$this->paymentService->executePayment($requestData);
 					$transaction['callback_amount'] = $requestData['amount'] * 100;
 					
-                     $this->transaction->saveTransaction($transactionData);
+                    $this->transaction->saveTransaction($transactionData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100', $transactionData);
+					$comments='callbackscript executed successfully.';
+					return $this->renderTemplate($callbackComments);
 				}
-else{
-	$this->paymentService->executePayment($requestData,true);
-		$transaction['callback_amount']='0';
+				else{
+					$this->paymentService->executePayment($requestData,true);
+					$transaction['callback_amount']='0';
 					
-		$this->transaction->saveTransaction($transactionData);
-	$this->getLogger(__METHOD__)->error('handlecommunication:status=fail',$requestData);
-	$this->getLogger(__METHOD__)->error('handlecommunication:status=fail', $transactionData);
-	return 'Novalnet callback received: failure transaction in communication break.';
+					$this->transaction->saveTransaction($transactionData);
+					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail',$requestData);
+					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail', $transactionData);
+					
+					return false;
 
-}
-			
-			
-			
-				$this->getLogger(__METHOD__)->error('handlecommunication:properties',$requestData);
-				} else {
+					}
+		
+			} else {
 					
 				return 'Novalnet callback received: Given payment type is not matched.';
 			}
