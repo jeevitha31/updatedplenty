@@ -571,9 +571,9 @@ class CallbackController extends Controller
 		//$property = $orderObj->properties;
 		//~ $ordertype = array_map('get_object_vars',$orderObj->properties);
 		//~ $order_ref= array_column($ordertype,'value','typeId');
-		 foreach($order->properties as $property)
+		 foreach($orderObj->properties as $property)
         {
-		if($property->typeId == '3' && $paymentHelper->isNovalnetPaymentMethod($property->value))
+		if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 		{
 			 $this->getLogger(__METHOD__)->error('handlecommunication:properties','success');
 		} else
