@@ -465,6 +465,7 @@ class CallbackController extends Controller
 					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
 					return $order_obj;
 				});
+			
 				 
 				 $this->handleCommunicationBreak($order_ref);
 			
@@ -575,10 +576,17 @@ class CallbackController extends Controller
         {
 		if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 		{
-			 $this->getLogger(__METHOD__)->error('handlecommunication:properties','success');
+			$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
+			
+			//~ if(in_array($this->aryCaptureParams['payment_type'],$this->aryPaymentGroups))
+			//~ {
+			//~ }
+			
+			
+			 $this->getLogger(__METHOD__)->error('handlecommunication:properties',$payment_type);
 		} else
 		{
-			$this->getLogger(__METHOD__)->error('handlecommunication:properties','failure');
+			return 'Novalnet callback received: Given payment type is not matched.';
 		}
 	}
 		
