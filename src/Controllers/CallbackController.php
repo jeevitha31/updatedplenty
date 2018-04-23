@@ -590,14 +590,15 @@ class CallbackController extends Controller
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 				$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
 					
-					
-                $transactionData = [
+					   $transactionData                     = pluginApp(stdClass::class);
+					   
+                
                         
-                            'paymentName'     => $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']),
+                         $transactionData->paymentName = $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']);
                             
-                            'orderNo'         => $requestData['order_no'],
-                            'order_total_amount'=> $requestData['amount'] * 100
-							];
+                         $transactionData->orderNo  = $requestData['order_no'];
+                          $transactionData->order_total_amount = $requestData['amount'] * 100;
+							
 					
 					
 				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
