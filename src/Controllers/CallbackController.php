@@ -576,8 +576,7 @@ class CallbackController extends Controller
     public function handleCommunicationBreak($orderObj)
     
     {
-		if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
-		{
+		
 		 foreach($orderObj->properties as $property)
 			{
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
@@ -587,8 +586,17 @@ class CallbackController extends Controller
 					$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 					$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
 					
-			
-			
+			if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
+				{
+					$this->paymentService->executePayment($requestData);
+					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
+				}
+else{
+	$this->paymentService->executePayment($requestData,true);
+	$this->getLogger(__METHOD__)->error('handlecommunication:status=fail',$requestData);
+	return 'Novalnet callback received: failure transaction in communication break.';
+
+}
 			
 			
 			
@@ -598,11 +606,7 @@ class CallbackController extends Controller
 				return 'Novalnet callback received: Given payment type is not matched.';
 			}
 	}
-}
-else{
-	return 'Novalnet callback received: failure transaction in communication break.';
 
-}
 		
 	}
 	
