@@ -593,9 +593,9 @@ class CallbackController extends Controller
 					
                 $transactionData = [
                         
-                            'payment_name'     => $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']),
+                            'paymentName'     => $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']),
                             
-                            'order_no'         => $requestData['order_no'],
+                            'orderNo'         => $requestData['order_no'],
                             'order_total_amount'=> $requestData['amount'] * 100
 							];
 					
