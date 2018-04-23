@@ -607,7 +607,7 @@ class CallbackController extends Controller
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100', $transactionData);
 					$comments='callbackscript executed successfully.';
-					return $this->renderTemplate($callbackComments);
+					return $this->renderTemplate($comments);
 				}
 				else{
 					$this->paymentService->executePayment($requestData,true);
