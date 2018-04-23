@@ -474,7 +474,11 @@ class CallbackController extends Controller
 				});
 			
 				 
-				 $this->handleCommunicationBreak($order_ref);
+				$comment = $this->handleCommunicationBreak($order_ref);
+				if(is_string($comment))
+				{
+					return $this->renderTemplate($comment);
+				}
 			
 			}
 			else{
@@ -588,38 +592,36 @@ class CallbackController extends Controller
 					
 					
                 $transactionData = [
-                            'amount'           => $requestData['amount'] * 100,
-                            'callback_amount'  => $requestData['amount'] * 100,
-                            'tid'              => $requestData['tid'],
-                            'ref_tid'          => $requestData['tid'],
+                        
                             'payment_name'     => $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']),
-                            'payment_type'     => $requestData['payment_type'],
+                            
                             'order_no'         => $requestData['order_no'],
+                            'order_total_amount'=> $requestData['amount'] * 100
 							];
 					
 					
 				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
 				{
 					$this->paymentService->executePayment($requestData);
-					$transaction['callback_amount'] = $requestData['amount'] * 100;
 					
-                    $this->transaction->saveTransaction($transactionData);
+					
+					
+                    $this->saveTransactionLog($transactionData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100', $transactionData);
-					$comments='callbackscript executed successfully.';
-					return $this->renderTemplate($comments);
+					
 				}
 				else{
 					$this->paymentService->executePayment($requestData,true);
-					$transaction['callback_amount']='0';
+					$this->aryCaptureParams['amount'] = '0';
 					
-					$this->transaction->saveTransaction($transactionData);
+					 $this->saveTransactionLog($transactionData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail',$requestData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail', $transactionData);
-					
-					return false;
 
 					}
+					return 'callbackscript executed successfully on '. date('Y-m-d H:i:s');
+					
 		
 			} else {
 					
