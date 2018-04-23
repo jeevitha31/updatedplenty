@@ -576,7 +576,7 @@ class CallbackController extends Controller
         {
 		if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 		{
-			$payment_type = strtolower($this->paymentHelper->getPaymentKeyByMop($property->value));
+			$payment_type = strtolower((string)($this->paymentHelper->getPaymentKeyByMop($property->value)));
 			
 			//~ if(in_array($this->aryCaptureParams['payment_type'],$this->aryPaymentGroups))
 			//~ {
