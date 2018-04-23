@@ -19,6 +19,7 @@ use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
 
 use Novalnet\Helper\PaymentHelper;
+use Novalnet\Services\PaymentService;
 use Plenty\Plugin\Templates\Twig;
 use Novalnet\Services\TransactionService;
 use Plenty\Plugin\Log\Loggable;
@@ -55,6 +56,10 @@ class CallbackController extends Controller
      * @var transaction
      */
     private $transaction;
+     /**
+     * @var paymentService
+     */
+    private $paymentService;
     
     private $orderRepository;
 
@@ -177,18 +182,20 @@ class CallbackController extends Controller
     public function __construct(  Request $request,
                                   ConfigRepository $config,
                                   PaymentHelper $paymentHelper,
+                                  PaymentService $paymentService,
                                   Twig $twig,
                                   TransactionService $tranactionService,
                                   OrderRepositoryContract $orderRepository
                                 )
     {
-        $this->config           = $config;
-        $this->paymentHelper    = $paymentHelper;
-        $this->twig             = $twig;
-        $this->transaction      = $tranactionService;
-        $this->orderRepository = $orderRepository;
-        $this->aryCaptureParams = $request->all();
-        $this->paramsRequired = ['vendor_id', 'tid', 'payment_type', 'status', 'tid_status'];
+        $this->config				= $config;
+        $this->paymentHelper		= $paymentHelper;
+        $this->paymentService		= $paymentService;
+        $this->twig					= $twig;
+        $this->transaction			= $tranactionService;
+        $this->orderRepository		= $orderRepository;
+        $this->aryCaptureParams		= $request->all();
+        $this->paramsRequired		= ['vendor_id', 'tid', 'payment_type', 'status', 'tid_status'];
 
         if(!empty($this->aryCaptureParams['subs_billing']))
         {
@@ -576,12 +583,16 @@ class CallbackController extends Controller
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 				{
 					$requestData = $this->aryCaptureParams;
+					$requestData['mop']= $property->value;
+					$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
+					$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
+					
 			
 			
 			
 			
 			
-				$this->getLogger(__METHOD__)->error('handlecommunication:properties',$requestData['order_no']);
+				$this->getLogger(__METHOD__)->error('handlecommunication:properties',$requestData);
 				} else {
 					
 				return 'Novalnet callback received: Given payment type is not matched.';
