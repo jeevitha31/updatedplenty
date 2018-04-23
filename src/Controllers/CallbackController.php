@@ -586,14 +586,34 @@ class CallbackController extends Controller
 					$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 					$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
 					
+					
+                        $transactionData = [
+                            'amount'           => $requestData['amount'] * 100,
+                            'callback_amount'  => $requestData['amount'] * 100,
+                            'tid'              => $requestData['tid'],
+                            'ref_tid'          => $requestData['tid'],
+                            'payment_name'     => $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']),
+                            'payment_type'     => $requestData['payment_type'],
+                            'order_no'         => $requestData['order_no'],
+                        ];
+					
+					
 			if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
 				{
 					$this->paymentService->executePayment($requestData);
+					$transaction['callback_amount'] = $requestData['amount'] * 100;
+					
+                     $this->transaction->saveTransaction($transactionData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
+					$this->getLogger(__METHOD__)->error('handlecommunication:status=100', $transactionData);
 				}
 else{
 	$this->paymentService->executePayment($requestData,true);
+		$transaction['callback_amount']='0';
+					
+		$this->transaction->saveTransaction($transactionData);
 	$this->getLogger(__METHOD__)->error('handlecommunication:status=fail',$requestData);
+	$this->getLogger(__METHOD__)->error('handlecommunication:status=fail', $transactionData);
 	return 'Novalnet callback received: failure transaction in communication break.';
 
 }
