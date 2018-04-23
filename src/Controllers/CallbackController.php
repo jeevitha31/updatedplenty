@@ -569,45 +569,30 @@ class CallbackController extends Controller
     public function handleCommunicationBreak($orderObj)
     
     {
-		//$property = $orderObj->properties;
-		//~ $ordertype = array_map('get_object_vars',$orderObj->properties);
-		//~ $order_ref= array_column($ordertype,'value','typeId');
+		if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
+		{
 		 foreach($orderObj->properties as $property)
-        {
-		if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
-		{
-			$payment_type = strtolower((string)($this->paymentHelper->getPaymentKeyByMop($property->value)));
-			
-			//~ if(in_array($this->aryCaptureParams['payment_type'],$this->aryPaymentGroups))
-			//~ {
-			//~ }
+			{
+			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
+				{
+					$requestData = $this->aryCaptureParams;
 			
 			
-			 $this->getLogger(__METHOD__)->error('handlecommunication:properties',$payment_type);
-		} else
-		{
-			return 'Novalnet callback received: Given payment type is not matched.';
-		}
+			
+			
+			
+				$this->getLogger(__METHOD__)->error('handlecommunication:properties',$requestData);
+				} else {
+					
+				return 'Novalnet callback received: Given payment type is not matched.';
+			}
 	}
+}
+else{
+	return 'Novalnet callback received: failure transaction in communication break.';
+
+}
 		
-		//$order_type= array_column($orderObj->properties,'typeId','value');
-		//foreach($orderObj->properties as $property)
-		//~ {
-			 //~ if($property->typeId == '3' && $paymentHelper->isNovalnetPaymentMethod($property->value))
-            //~ {
-				//~ $payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
-				//~ $this->getLogger(__METHOD__)->error('handlecommunication:property', $payment_type);
-				//~ return $payment_type;
-			//~ }
-		//~ }
-	    //$this->getLogger(__METHOD__)->error('handlecommunication:properties', $order_ref);
-		//$payment_type = $this->paymentHelper->getPaymentKeyByMop($property->value);
-		
-         //~ $this->getLogger(__METHOD__)->error('handlecommunication:payment_type', $payment_type);
-            //~ if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
-            //~ {
-				 //~ $this->getLogger(__METHOD__)->error('handlecommunication:ifcondition', $property);
-				//~ return 'Novalnet Callback recieved: communication failure';
-			//~ }
 	}
+	
 }
