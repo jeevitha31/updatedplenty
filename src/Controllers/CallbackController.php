@@ -581,7 +581,7 @@ class CallbackController extends Controller
 			
 			
 			
-				$this->getLogger(__METHOD__)->error('handlecommunication:properties',$requestData);
+				$this->getLogger(__METHOD__)->error('handlecommunication:properties',$requestData['order_no']);
 				} else {
 					
 				return 'Novalnet callback received: Given payment type is not matched.';
