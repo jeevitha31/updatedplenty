@@ -475,8 +475,10 @@ class CallbackController extends Controller
 			
 				 
 				$comment = $this->handleCommunicationBreak($order_ref);
+				$this->getLogger(__METHOD__)->error('comment1', $comment);
 				if(is_string($comment))
 				{
+					$this->getLogger(__METHOD__)->error('comment', $comment);
 					
 					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $comment);
 					return $this->renderTemplate($comment);
