@@ -605,16 +605,15 @@ class CallbackController extends Controller
 					
 				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(85,86,90,100)))
 				{
+					
 					$this->paymentService->executePayment($requestData);
-					
-					
-					
                     $this->saveTransactionLog($transactionData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100', $transactionData);
 					
 				}
 				else{
+					$requestData['type'] = 'cancel';
 					$this->paymentService->executePayment($requestData,true);
 					$this->aryCaptureParams['amount'] = '0';
 					
