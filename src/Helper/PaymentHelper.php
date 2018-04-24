@@ -205,18 +205,12 @@ class PaymentHelper
         $payment->currency        = $requestData['currency'];
         $payment->amount          = $requestData['paid_amount'];
         $transactionId = $requestData['tid'];
-        if(!empty($requestData['type']))
+        if(!empty($requestData['type']) && $requestData['type'] == 'debit')
         {
-			if($requestData['type'] == 'cancel')
-			{
-				$payment->type = $requestData['type'];
-            $payment->status = Payment::STATUS_CANCELED;
-			}
-			else{
 			
             $payment->type = $requestData['type'];
             $payment->status = Payment::STATUS_REFUNDED;
-			}
+			
 		}
 
         $paymentProperty     = [];
