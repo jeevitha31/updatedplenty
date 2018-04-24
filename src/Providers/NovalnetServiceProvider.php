@@ -153,6 +153,12 @@ class NovalnetServiceProvider extends ServiceProvider
                 AfterBasketItemAdd::class,
                 AfterBasketCreate::class
             ]);
+            
+		 $eventProceduresService->registerProcedure('plenty_novalnet', ProcedureEntry::PROCEDURE_GROUP_ORDER, [
+            'de' => 'Rückzahlung der novalnet-Zahlung',
+            'en' => 'Refund the novalnet payment'
+        ], 'Novalnet\Procedures\RefundEventProcedure@run');
+
 
 
         // Listen for the event that gets the payment method content
