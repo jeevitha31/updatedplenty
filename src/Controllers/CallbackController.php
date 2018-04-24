@@ -474,14 +474,15 @@ class CallbackController extends Controller
 				});
 			
 				 
-				$comment = $this->handleCommunicationBreak($order_ref);
-				$this->getLogger(__METHOD__)->error('comment1', $comment);
-				if(is_string($comment))
+				$callbackComments = $this->handleCommunicationBreak($order_ref);
+				$this->getLogger(__METHOD__)->error('comment1', $callbackComments);
+				if(is_string($callbackComments))
 				{
-					$this->getLogger(__METHOD__)->error('comment', $comment);
+					$this->getLogger(__METHOD__)->error('comment', $callbackComments);
 					
-					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $comment);
-					return $this->renderTemplate($comment);
+					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
+					$this->sendCallbackMail($callbackComments);
+					return $this->renderTemplate($callbackComments);
 				}
 			
 			}
@@ -584,7 +585,7 @@ class CallbackController extends Controller
     public function handleCommunicationBreak($orderObj)
     
     {
-		
+		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
 		foreach($orderObj->properties as $property)
 		{
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
@@ -594,18 +595,15 @@ class CallbackController extends Controller
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 				$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
 					
-					   $transactionData                     = pluginApp(stdClass::class);
-					   
-                
-                        
-                         $transactionData->paymentName = $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']);
-                            
-                         $transactionData->orderNo  = $requestData['order_no'];
-                          $transactionData->order_total_amount = $requestData['amount'];
+					$transactionData						= pluginApp(stdClass::class);
+					
+                    $transactionData->paymentName			= $this->paymentHelper->getPaymentNameByResponse($requestData['payment_id']);  
+                    $transactionData->orderNo				= $requestData['order_no'];
+                    $transactionData->order_total_amount	= $requestData['amount'];
 							
 					
 					
-				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(86,90,100)))
+				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(85,86,90,100)))
 				{
 					$this->paymentService->executePayment($requestData);
 					
