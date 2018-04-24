@@ -11,6 +11,8 @@ use Plenty\Plugin\Log\Loggable;
 
 class RefundEventProcedure
 {
+	 use Loggable;
+	 
 	 public function run(EventProceduresTriggered $eventTriggered, PaymentService $paymentService, PaymentRepositoryContract $paymentContract, PaymentHelper $paymentHelper)
     {
        
