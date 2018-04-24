@@ -31,6 +31,9 @@ use Novalnet\Services\PaymentService;
 use Novalnet\Services\TransactionService;
 use Plenty\Plugin\Templates\Twig;
 use Plenty\Plugin\ConfigRepository;
+use Novalnet\Procedures\RefundEventProcedure;
+use Plenty\Modules\EventProcedures\Services\EventProceduresService;
+use Plenty\Modules\EventProcedures\Services\Entries\ProcedureEntry;
 
 use Novalnet\Methods\NovalnetInvoicePaymentMethod;
 use Novalnet\Methods\NovalnetPrepaymentPaymentMethod;
@@ -81,6 +84,7 @@ class NovalnetServiceProvider extends ServiceProvider
                           PaymentMethodContainer $payContainer,
                           PaymentMethodRepositoryContract $paymentMethodService,
                           FrontendSessionStorageFactoryContract $sessionStorage,
+                          EventProceduresService $eventProceduresService,
                           TransactionService $transactionLogData,
                           Twig $twig,
                           ConfigRepository $config)
