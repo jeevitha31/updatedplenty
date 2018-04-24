@@ -201,15 +201,23 @@ class PaymentHelper
 
         $payment->mopId           = (int) $requestData['mop'];
         $payment->transactionType = Payment::TRANSACTION_TYPE_BOOKED_POSTING;
-        $payment->status          = Payment::STATUS_CAPTURED;
+        $payment->status          = $requestData['type'] == 'cancel' ? Payment::STATUS_CANCELED : Payment::STATUS_CAPTURED;
         $payment->currency        = $requestData['currency'];
         $payment->amount          = $requestData['paid_amount'];
         $transactionId = $requestData['tid'];
         if(!empty($requestData['type']))
         {
+			if($requestData['type'] == 'cancel')
+			{
+				$payment->type = $requestData['type'];
+            $payment->status = Payment::STATUS_CANCELED;
+			}
+			else{
+			
             $payment->type = $requestData['type'];
             $payment->status = Payment::STATUS_REFUNDED;
-        }
+			}
+		}
 
         $paymentProperty     = [];
         $paymentProperty[]   = $this->getPaymentProperty(PaymentProperty::TYPE_BOOKING_TEXT, $transactionId);
