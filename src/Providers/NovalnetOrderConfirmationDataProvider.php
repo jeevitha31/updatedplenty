@@ -17,6 +17,8 @@ namespace Novalnet\Providers;
 use Plenty\Plugin\Templates\Twig;
 
 use Novalnet\Helper\PaymentHelper;
+use Plenty\Modules\Order\Models\Order;
+use Plenty\Modules\Payment\Models\Payment;
 use Plenty\Modules\Comment\Contracts\CommentRepositoryContract;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use \Plenty\Modules\Authorization\Services\AuthHelper;
