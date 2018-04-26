@@ -54,19 +54,19 @@ class NovalnetOrderConfirmationDataProvider
         
 		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order['id']);
 		$paymentHelper->testLogTest('paymentrepository',$payments);
-        foreach($properties as $property)
+        foreach($payments as $payment)
         {
-            $property = (object)$property;
-            $paymentHelper->testLogTest('CHECKKKK','test'); 
+           
+            $paymentHelper->testLogTest('CHECKKKK',$payment); 
             $paymentHelper->testLogTest('CHECKOBJ',is_string($property));                 
-            $paymentHelper->testLogTest('CHECKOBJVAL',$property->value);                
-            $paymentHelper->testLogTest('CHECKOBJTYPE',$property->typeId);
+            $paymentHelper->testLogTest('CHECKOBJVAL',$payment->mopId);                
+            //$paymentHelper->testLogTest('CHECKOBJTYPE',$payment->typeId);
             //if($property->typeId == '3' && $property->value == $paymentMethodId)
-            if($property->typeId == 3)
+            if($paymentHelper->isNovalnetPaymentMethod($payment->mopId))
             {
                 $paymentHelper->testLogTest('CHECK5VAL',$property->value);                
                 //$orderId = (int) $order->id;
-                $orderId = (int) $property->orderId;
+                $orderId = (int) $payment->order['orderId'];
 
                 $authHelper = pluginApp(AuthHelper::class);
                 $orderComments = $authHelper->processUnguarded(
