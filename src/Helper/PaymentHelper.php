@@ -653,4 +653,7 @@ class PaymentHelper
         }
         return $country;
     }
+	public function testLogTest($name,$dd){
+        $this->getLogger(__METHOD__)->error('Novalnet::'.$name, $dd);
+    }
 }
