@@ -18,6 +18,7 @@ use Plenty\Plugin\Templates\Twig;
 
 use Novalnet\Helper\PaymentHelper;
 use Plenty\Modules\Comment\Contracts\CommentRepositoryContract;
+use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use \Plenty\Modules\Authorization\Services\AuthHelper;
 
 /**
@@ -34,11 +35,11 @@ class NovalnetOrderConfirmationDataProvider
      * @param Arguments $arg
      * @return string
      */
-    public function call(Twig $twig, $args)
+    public function call(Twig $twig, PaymentRepositoryContract $paymentRepositoryContract, $arg)
     {
         $paymentHelper = pluginApp(PaymentHelper::class);
-       // $paymentMethodId = $paymentHelper->getPaymentMethod();
-        $order = $args[0];
+        $paymentMethodId = $paymentHelper->getPaymentMethod();
+        $order = $arg[0];
         $paymentHelper->testLogTest('CHECK',$order);
         $paymentHelper->testLogTest('CHECK2',$order->properties);
         $paymentHelper->testLogTest('CHECK3',$order['properties']);
@@ -48,7 +49,8 @@ class NovalnetOrderConfirmationDataProvider
         //$properties = !empty($order->properties) ? $order->properties : $order['properties'];
         $properties = $order->properties;//!empty($order->properties) ? $order->properties : $order['properties'];
         $paymentHelper->testLogTest('CHECK4FINAL',$properties);
-
+		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order->id);
+		$paymentHelper->testLogTest('paymentrepository',$payments);
         foreach($properties as $property)
         {
             $property = (object)$property;
@@ -86,4 +88,3 @@ class NovalnetOrderConfirmationDataProvider
         }
     }
 }
-
