@@ -38,7 +38,7 @@ class NovalnetOrderConfirmationDataProvider
     public function call(Twig $twig, PaymentRepositoryContract $paymentRepositoryContract, $arg)
     {
         $paymentHelper = pluginApp(PaymentHelper::class);
-        $paymentMethodId = $paymentHelper->getPaymentMethod();
+        //$paymentMethodId = $paymentHelper->getPaymentMethod();
         $order = $arg[0];
         $paymentHelper->testLogTest('CHECK',$order);
         $paymentHelper->testLogTest('CHECK2',$order->properties);
