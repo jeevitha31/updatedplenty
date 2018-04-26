@@ -52,11 +52,11 @@ class NovalnetOrderConfirmationDataProvider
         $paymentHelper->testLogTest('orderid1',$order->id);
         $paymentHelper->testLogTest('orderid2',$order['id']);
          
-		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order->id);
+		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order['id']);
 		$paymentHelper->testLogTest('paymentrepository',$payments);
         foreach($payments as $payment)
         {
-            $payment = (object)$payment;
+          
             $paymentHelper->testLogTest('CHECKKKK',$payment); 
            // $paymentHelper->testLogTest('CHECKOBJ',is_string($property));                 
             $paymentHelper->testLogTest('CHECKOBJVAL',$payment->mopId);                
@@ -66,7 +66,7 @@ class NovalnetOrderConfirmationDataProvider
             {
                 //$paymentHelper->testLogTest('CHECK5VAL',$property->value);                
                 //$orderId = (int) $order->id;
-                $orderId = (int) $payment->order->orderId;
+                $orderId = (int) $payment->order['orderId'];
 
                 $authHelper = pluginApp(AuthHelper::class);
                 $orderComments = $authHelper->processUnguarded(
