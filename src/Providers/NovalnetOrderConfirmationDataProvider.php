@@ -58,13 +58,13 @@ class NovalnetOrderConfirmationDataProvider
         {
            
             $paymentHelper->testLogTest('CHECKKKK',$payment); 
-            $paymentHelper->testLogTest('CHECKOBJ',is_string($property));                 
+           // $paymentHelper->testLogTest('CHECKOBJ',is_string($property));                 
             $paymentHelper->testLogTest('CHECKOBJVAL',$payment->mopId);                
             //$paymentHelper->testLogTest('CHECKOBJTYPE',$payment->typeId);
             //if($property->typeId == '3' && $property->value == $paymentMethodId)
             if($paymentHelper->isNovalnetPaymentMethod($payment->mopId))
             {
-                $paymentHelper->testLogTest('CHECK5VAL',$property->value);                
+                //$paymentHelper->testLogTest('CHECK5VAL',$property->value);                
                 //$orderId = (int) $order->id;
                 $orderId = (int) $payment->order['orderId'];
 
