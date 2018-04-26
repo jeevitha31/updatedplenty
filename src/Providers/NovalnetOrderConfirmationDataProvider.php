@@ -49,7 +49,10 @@ class NovalnetOrderConfirmationDataProvider
         //$properties = !empty($order->properties) ? $order->properties : $order['properties'];
         $properties = $order->properties;//!empty($order->properties) ? $order->properties : $order['properties'];
         $paymentHelper->testLogTest('CHECK4FINAL',$properties);
-		$payments = $paymentRepositoryContract->getPaymentsByOrderId(117);
+        $paymentHelper->testLogTest('orderid1',$order->id);
+        $paymentHelper->testLogTest('orderid2',$order['id']);
+        
+		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order['id']);
 		$paymentHelper->testLogTest('paymentrepository',$payments);
         foreach($properties as $property)
         {
