@@ -38,7 +38,7 @@ class NovalnetOrderConfirmationDataProvider
     public function call(Twig $twig, PaymentRepositoryContract $paymentRepositoryContract, $arg)
     {
         $paymentHelper = pluginApp(PaymentHelper::class);
-        //$paymentMethodId = $paymentHelper->getPaymentMethod();
+        $paymentMethodId = $paymentHelper->getPaymentMethod();
         $order = $arg[0];
         $paymentHelper->testLogTest('CHECK',$order);
         $paymentHelper->testLogTest('CHECK2',$order->properties);
@@ -49,7 +49,7 @@ class NovalnetOrderConfirmationDataProvider
         //$properties = !empty($order->properties) ? $order->properties : $order['properties'];
         $properties = $order->properties;//!empty($order->properties) ? $order->properties : $order['properties'];
         $paymentHelper->testLogTest('CHECK4FINAL',$properties);
-		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order->id);
+		$payments = $paymentRepositoryContract->getPaymentsByOrderId(117);
 		$paymentHelper->testLogTest('paymentrepository',$payments);
         foreach($properties as $property)
         {
