@@ -52,7 +52,7 @@ class NovalnetOrderConfirmationDataProvider
         $paymentHelper->testLogTest('orderid1',$order->id);
         $paymentHelper->testLogTest('orderid2',$order['id']);
         
-		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order['id']);
+		$payments = $paymentRepositoryContract->getPaymentsByOrderId($order->id);
 		$paymentHelper->testLogTest('paymentrepository',$payments);
         foreach($payments as $payment)
         {
