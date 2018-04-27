@@ -27,7 +27,7 @@ use Plenty\Plugin\Mail\Contracts\MailerContract;
 use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 use \Plenty\Modules\Authorization\Services\AuthHelper;
 use \stdClass;
-
+use Plenty\Plugin\Translation\Translator;
 /**
  * Class CallbackController
  *
@@ -213,6 +213,9 @@ class CallbackController extends Controller
      */
     public function processCallback()
     {
+	 $translator = pluginApp(Translator::class);
+        return $this->renderTemplate($translator->trans("Novalnet::PaymentMethod.cc_name","de"));   
+	    
         $displayTemplate = $this->validateIpAddress();
 
         if ($displayTemplate)
