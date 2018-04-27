@@ -87,7 +87,7 @@ class NovalnetOrderConfirmationDataProvider
                     $comment .= (string)$data->text;
                     $comment .= '</br>';
                 }
-		    $comment .= 'test_comment';
+		    $comment .= 'test_comment123';
 
                 return $twig->render('Novalnet::NovalnetOrderHistory', ['comments' => html_entity_decode($comment)]);
             }
