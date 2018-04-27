@@ -49,6 +49,8 @@ class NovalnetOrderConfirmationDataProvider
         $paymentHelper->testLogTest('CHECK3',$order['properties']);
 	$barzahlentoken = (string)$sessionStorage->getPlugin()->getValue('cashtoken');
 	$testmode = (string)$sessionStorage->getPlugin()->getValue('testmode');
+	     $paymentHelper->testLogTest('barzahlentoken',$barzahlentoken); 
+	     $paymentHelper->testLogTest('testmode_orderconfirmation',$testmode); 
        // if(isset($order->order))
         //    $order = $order->order;
         
