@@ -45,6 +45,8 @@ class NovalnetOrderConfirmationDataProvider
         $paymentHelper->testLogTest('CHECK',$order);
         $paymentHelper->testLogTest('CHECK2',$order->properties);
         $paymentHelper->testLogTest('CHECK3',$order['properties']);
+	$barzahlentoken = (string)$sessionStorage->getPlugin()->getValue('cashtoken');
+	$testmode = (string)$sessionStorage->getPlugin()->getValue('testmode');
        // if(isset($order->order))
         //    $order = $order->order;
         
@@ -89,7 +91,9 @@ class NovalnetOrderConfirmationDataProvider
                 }
 		    $comment .= 'test_comment123';
 
-                return $twig->render('Novalnet::NovalnetOrderHistory', ['comments' => html_entity_decode($comment)]);
+              $payment_type = (string)$paymentHelper->getPaymentKeyByMop($payment->mopId);
+
+                return $twig->render('Novalnet::NovalnetOrderHistory', ['comments' => html_entity_decode($comment),'barzahlentoken' => html_entity_decode($barzahlentoken),'payment_type' => html_entity_decode($payment_type),'testmode' => html_entity_decode($testmode)]);
             }
         }
     }
