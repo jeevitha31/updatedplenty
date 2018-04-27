@@ -22,6 +22,7 @@ use Plenty\Modules\Payment\Models\Payment;
 use Plenty\Modules\Comment\Contracts\CommentRepositoryContract;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use \Plenty\Modules\Authorization\Services\AuthHelper;
+use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
 
 /**
  * Class NovalnetOrderConfirmationDataProvider
@@ -40,6 +41,7 @@ class NovalnetOrderConfirmationDataProvider
     public function call(Twig $twig, PaymentRepositoryContract $paymentRepositoryContract, $arg)
     {
         $paymentHelper = pluginApp(PaymentHelper::class);
+	$sessionStorage = pluginApp(FrontendSessionStorageFactoryContract::class);
        // $paymentMethodId = $paymentHelper->getPaymentMethod();
         $order = $arg[0];
         $paymentHelper->testLogTest('CHECK',$order);
