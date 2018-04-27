@@ -1,27 +1,28 @@
 <?php
 /**
- * This module is used for real time processing of
- * Novalnet payment module of customers.
- * Released under the GNU General Public License.
- * This free contribution made by request.
- * If you have found this script useful a small
- * recommendation as well as a comment on merchant form
- * would be greatly appreciated.
+ * NOTICE OF LICENSE
  *
- * @author       Novalnet
- * @copyright(C) Novalnet. All rights reserved. <https://www.novalnet.de/>
+ * This source file is subject to the GNU General Public License
+ *
+ * @author Novalnet <technic@novalnet.de>
+ * @copyright Novalnet
+ * @license GNU General Public License
+ *
+ * Script : NovalnetOrderConfirmationDataProvider.php
+ *
  */
 
 namespace Novalnet\Providers;
 
 use Plenty\Plugin\Templates\Twig;
+
+use Novalnet\Helper\PaymentHelper;
 use Plenty\Modules\Order\Models\Order;
 use Plenty\Modules\Payment\Models\Payment;
-use Novalnet\Helper\PaymentHelper;
 use Plenty\Modules\Comment\Contracts\CommentRepositoryContract;
-use \Plenty\Modules\Authorization\Services\AuthHelper;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
-use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
+use \Plenty\Modules\Authorization\Services\AuthHelper;
+
 /**
  * Class NovalnetOrderConfirmationDataProvider
  *
@@ -29,7 +30,6 @@ use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFact
  */
 class NovalnetOrderConfirmationDataProvider
 {
-	
     /**
      * Setup the Novalnet transaction comments for the requested order
      *
@@ -37,26 +37,38 @@ class NovalnetOrderConfirmationDataProvider
      * @param Arguments $arg
      * @return string
      */
-    public function call(Twig $twig, $args)
+    public function call(Twig $twig, PaymentRepositoryContract $paymentRepositoryContract, $arg)
     {
         $paymentHelper = pluginApp(PaymentHelper::class);
-        $PaymentRepositoryContract = pluginApp(PaymentRepositoryContract::class);
-        $sessionStorage = pluginApp(FrontendSessionStorageFactoryContract::class);
-        $sessionStorage->getPlugin()->setValue('token','tokenvalue');
-        $barzahlentoken = (string)$sessionStorage->getPlugin()->getValue('cashtoken');
-		$testmode = (string)$sessionStorage->getPlugin()->getValue('testmode');
-       
+       // $paymentMethodId = $paymentHelper->getPaymentMethod();
+        $order = $arg[0];
+        $paymentHelper->testLogTest('CHECK',$order);
+        $paymentHelper->testLogTest('CHECK2',$order->properties);
+        $paymentHelper->testLogTest('CHECK3',$order['properties']);
+       // if(isset($order->order))
+        //    $order = $order->order;
         
-        $order = $args[0];
-
-        if(isset($order->order))
-            $order = $order->order;
-        
-        foreach($order->properties as $property)
+        //$properties = !empty($order->properties) ? $order->properties : $order['properties'];
+        $properties = $order->properties;//!empty($order->properties) ? $order->properties : $order['properties'];
+        $paymentHelper->testLogTest('CHECK4FINAL',$properties);
+        $paymentHelper->testLogTest('orderid1',$order->id);
+        $paymentHelper->testLogTest('orderid2',$order['id']);
+         $orderno = $order['id'];
+		$payments = $paymentRepositoryContract->getPaymentsByOrderId($orderno);
+		$paymentHelper->testLogTest('paymentrepository',$payments);
+        foreach($payments as $payment)
         {
-            if($property->typeId == '3' && $paymentHelper->isNovalnetPaymentMethod($property->value))
+          
+            $paymentHelper->testLogTest('CHECKKKK',$payment); 
+           // $paymentHelper->testLogTest('CHECKOBJ',is_string($property));                 
+            $paymentHelper->testLogTest('CHECKOBJVAL',$payment->mopId);                
+            //$paymentHelper->testLogTest('CHECKOBJTYPE',$payment->typeId);
+            //if($property->typeId == '3' && $property->value == $paymentMethodId)
+            if($paymentHelper->isNovalnetPaymentMethod($payment->mopId))
             {
-                $orderId = (int) $order->id;
+                //$paymentHelper->testLogTest('CHECK5VAL',$property->value);                
+                //$orderId = (int) $order->id;
+                $orderId = (int) $payment->order['orderId'];
 
                 $authHelper = pluginApp(AuthHelper::class);
                 $orderComments = $authHelper->processUnguarded(
@@ -66,20 +78,17 @@ class NovalnetOrderConfirmationDataProvider
                             return $commentsObj->listComments();
                         }
                 );
-
+                $paymentHelper->testLogTest('CHECK7CMD',$orderId);
+                $paymentHelper->testLogTest('CHECK6CMD',$orderComments);
+            $paymentHelper->testLogTest('CHECK8CMD',$order->id);
                 $comment = '';
                 foreach($orderComments as $data)
                 {
                     $comment .= (string)$data->text;
                     $comment .= '</br>';
-		
-                    
                 }
-                $comment .= 'novalnet_testcomment';
 
- 		$payment_type = (string)$paymentHelper->getPaymentKeyByMop($property->value);
-
-                return $twig->render('Novalnet::NovalnetOrderHistory', ['comments' => html_entity_decode($comment),'barzahlentoken' => html_entity_decode($barzahlentoken),'payment_type' => html_entity_decode($payment_type),'testmode' => html_entity_decode($testmode)]);
+                return $twig->render('Novalnet::NovalnetOrderHistory', ['comments' => html_entity_decode($comment)]);
             }
         }
     }
