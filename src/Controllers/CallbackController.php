@@ -488,7 +488,7 @@ class CallbackController extends Controller
 					//$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
 					//$this->sendCallbackMail($callbackComments);
 					//return $this->renderTemplate($callbackComments);
-				}
+				//}
 			
 			}
 			else{
