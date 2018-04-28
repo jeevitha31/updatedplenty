@@ -472,12 +472,14 @@ class CallbackController extends Controller
 				$order_ref = $authHelper->processUnguarded(
                 function () use ($orderId) {
 					$order_obj = $this->orderRepository->findOrderById($orderId);
+			
 					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
 					return $order_obj;
 				});
 			
 				 
 				$callbackComments = $this->handleCommunicationBreak($order_ref);
+				$this->getLogger(__METHOD__)->error('comment1', $order_ref);
 				$this->getLogger(__METHOD__)->error('comment1', $callbackComments);
 				if(is_string($callbackComments))
 				{
