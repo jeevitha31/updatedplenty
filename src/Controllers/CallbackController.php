@@ -513,6 +513,7 @@ class CallbackController extends Controller
 					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
 					return $order_obj;
 				});
+	    return $order_ref;
 		
 	}
 
