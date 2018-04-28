@@ -478,16 +478,16 @@ class CallbackController extends Controller
 				});
 			
 				 
-				$callbackComments = $this->handleCommunicationBreak($order_ref);
-				$this->getLogger(__METHOD__)->error('comment1', $order_ref);
-				$this->getLogger(__METHOD__)->error('comment1', $callbackComments);
-				if(is_string($callbackComments))
-				{
-					$this->getLogger(__METHOD__)->error('comment', $callbackComments);
+				$this->handleCommunicationBreak($order_ref);
+				//$this->getLogger(__METHOD__)->error('comment1', $order_ref);
+				//$this->getLogger(__METHOD__)->error('comment1', $callbackComments);
+				//i//f(is_string($callbackComments))
+				//{//
+					//$this->getLogger(__METHOD__)->error('comment', $callbackComments);
 					
-					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
-					$this->sendCallbackMail($callbackComments);
-					return $this->renderTemplate($callbackComments);
+					//$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
+					//$this->sendCallbackMail($callbackComments);
+					//return $this->renderTemplate($callbackComments);
 				}
 			
 			}
@@ -642,7 +642,15 @@ class CallbackController extends Controller
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail', $transactionData);
 
 					}
-					return 'callbackscript executed successfully on '. date('Y-m-d H:i:s');
+					$callbackComments = $this->paymentHelper->getTranslatedText('callback_success',$requestData['lang']). date('Y-m-d H:i:s');
+					
+					
+				
+				$this->getLogger(__METHOD__)->error('comment', $callbackComments);
+					
+					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
+					$this->sendCallbackMail($callbackComments);
+					return $this->renderTemplate($callbackComments);
 					
 		
 			} else {
