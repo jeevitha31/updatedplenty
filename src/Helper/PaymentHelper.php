@@ -364,29 +364,33 @@ class PaymentHelper
      */
     public function getDisplayPaymentMethodName($requestData)
     {
+		$lang = strtolower((string)$requestData['lang']);
+		
+		$this->getLogger(__METHOD__)->error('helper:language', $lang);
+		 
         if ($requestData['invoice_type'])
         {
             if ($requestData['invoice_type'] == 'INVOICE')
             {
-                return $this->getTranslatedText('invoice_name');
+                return $this->getTranslatedText('invoice_name',$lang);
             }
             else
             {
-                return $this->getTranslatedText('prepayment_name');
+                return $this->getTranslatedText('prepayment_name',$lang);
             }
         }
 
         $paymentMethodDisplayName = [
-            '6'     => $this->getTranslatedText('cc_name'),
-            '37'    => $this->getTranslatedText('sepa_name'),
-            '33'    => $this->getTranslatedText('sofort_name'),
-            '34'    => $this->getTranslatedText('paypal_name'),
-            '49'    => $this->getTranslatedText('ideal_name'),
-            '50'    => $this->getTranslatedText('eps_name'),
-            '59'    => $this->getTranslatedText('cashpayment_name'),
-            '69'    => $this->getTranslatedText('giropay_name'),
-            '78'    => $this->getTranslatedText('przelewy_name'),
-            '40'    => $this->getTranslatedText('sepa_name'),
+            '6'     => $this->getTranslatedText('cc_name',$lang),
+            '37'    => $this->getTranslatedText('sepa_name',$lang),
+            '33'    => $this->getTranslatedText('sofort_name',$lang),
+            '34'    => $this->getTranslatedText('paypal_name',$lang),
+            '49'    => $this->getTranslatedText('ideal_name',$lang),
+            '50'    => $this->getTranslatedText('eps_name',$lang),
+            '59'    => $this->getTranslatedText('cashpayment_name',$lang),
+            '69'    => $this->getTranslatedText('giropay_name',$lang),
+            '78'    => $this->getTranslatedText('przelewy_name',$lang),
+            '40'    => $this->getTranslatedText('sepa_name',$lang),
         ];
 
         return $paymentMethodDisplayName[$requestData['payment_id']];
@@ -517,10 +521,11 @@ class PaymentHelper
     *
     * @return string
     */
-    public function getTranslatedText($key)
+    public function getTranslatedText($key,$lang = null)
     {
         $translator = pluginApp(Translator::class);
-        return $translator->trans("Novalnet::PaymentMethod.$key");
+        
+        return $lang == null ? $translator->trans("Novalnet::PaymentMethod.$key") : $translator->trans("Novalnet::PaymentMethod.$key",[],"$lang");
     }
 
     /**
@@ -652,8 +657,5 @@ class PaymentHelper
             $i = $i + 1;
         }
         return $country;
-    }
-	public function testLogTest($name,$dd){
-        $this->getLogger(__METHOD__)->error('Novalnet::'.$name, $dd);
     }
 }
