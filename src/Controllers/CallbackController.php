@@ -591,10 +591,11 @@ class CallbackController extends Controller
 			if($property->typeId == '6')
 			{
 				$requestData['lan'] = $property->value;
+				$this->getLogger(__METHOD__)->error('checkrequestdata--language', $requestData['lan']);
 			}
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 			{
-				
+				$this->getLogger(__METHOD__)->error('checkrequestdata', $requestData['lan']);
 				$requestData = $this->aryCaptureParams;
 				$requestData['mop']= $property->value;
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
