@@ -589,8 +589,8 @@ class CallbackController extends Controller
 		{
 			if($property->typeId == '6' )
 			{
-				$requestData['lan'] = $property->value;
-				$this->getLogger(__METHOD__)->error('checkrequestdata--language', $requestData['lan']);
+				$language = $property->value;
+				$this->getLogger(__METHOD__)->error('checkrequestdata--language',$language);
 			}
 	    }
 		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
@@ -599,8 +599,9 @@ class CallbackController extends Controller
 			
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 			{
-				$this->getLogger(__METHOD__)->error('checkrequestdata', $requestData['lan']);
+				$this->getLogger(__METHOD__)->error('checkrequestdata', $language);
 				$requestData = $this->aryCaptureParams;
+				$requestData['language'] = $language; 
 				$requestData['mop']= $property->value;
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 				$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
