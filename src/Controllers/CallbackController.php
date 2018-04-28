@@ -585,14 +585,18 @@ class CallbackController extends Controller
     public function handleCommunicationBreak($orderObj)
     
     {
-		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
-		foreach($orderObj->properties as $property)
+	    foreach($orderObj->properties as $property)
 		{
-			if($property->typeId == '6')
+			if($property->typeId == '6' )
 			{
 				$requestData['lan'] = $property->value;
 				$this->getLogger(__METHOD__)->error('checkrequestdata--language', $requestData['lan']);
 			}
+	    }
+		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
+		foreach($orderObj->properties as $property)
+		{
+			
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 			{
 				$this->getLogger(__METHOD__)->error('checkrequestdata', $requestData['lan']);
