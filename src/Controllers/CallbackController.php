@@ -27,7 +27,7 @@ use Plenty\Plugin\Mail\Contracts\MailerContract;
 use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 use \Plenty\Modules\Authorization\Services\AuthHelper;
 use \stdClass;
-use Plenty\Plugin\Translation\Translator;
+
 /**
  * Class CallbackController
  *
@@ -213,9 +213,6 @@ class CallbackController extends Controller
      */
     public function processCallback()
     {
-	 //$translator = pluginApp(Translator::class);
-        //return $this->renderTemplate($translator->trans("Novalnet::PaymentMethod.cc_name",[],"en"));   
-	    
         $displayTemplate = $this->validateIpAddress();
 
         if ($displayTemplate)
@@ -591,8 +588,13 @@ class CallbackController extends Controller
 		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
 		foreach($orderObj->properties as $property)
 		{
+			if($property->typeId == '6')
+			{
+				$requestData['lan'] = $property->value;
+			}
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 			{
+				
 				$requestData = $this->aryCaptureParams;
 				$requestData['mop']= $property->value;
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
@@ -608,7 +610,7 @@ class CallbackController extends Controller
 					
 				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(85,86,90,100)))
 				{
-					
+					$this->getLogger(__METHOD__)->error('checkrequestdata', $requestData);
 					$this->paymentService->executePayment($requestData);
                     $this->saveTransactionLog($transactionData);
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
@@ -636,5 +638,12 @@ class CallbackController extends Controller
 
 		
 	}
+	
+	public function getTranslatedText($key,$lang)
+	{
+		$translator = pluginApp(Translator::class);
+        return $translator->trans("Novalnet::PaymentMethod.$key",[],"$lang");
+	}
+
 	
 }
