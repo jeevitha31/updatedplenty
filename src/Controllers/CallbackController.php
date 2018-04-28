@@ -596,14 +596,16 @@ class CallbackController extends Controller
 		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
 		foreach($orderObj->properties as $property)
 		{
-			if($property->typeId == '6' )
+			
+			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
+			{
+				
+				if($property->typeId == '6' )
 			{
 				$lan = $property->value;
 				$this->getLogger(__METHOD__)->error('foreachcheckrequestdata--language',$lan);
 			}
 			
-			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
-			{
 				$this->getLogger(__METHOD__)->error('checkrequestdata', $language);
 				$this->getLogger(__METHOD__)->error('checkrequestdata', $lan);
 				$requestData = $this->aryCaptureParams;
