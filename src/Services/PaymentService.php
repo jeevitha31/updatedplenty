@@ -147,6 +147,7 @@ class PaymentService
 			}
 
             $transactionComments = $this->getTransactionComments($requestData);
+             $this->getLogger(__METHOD__)->error('ExecutePayment response comment.', $transactionComments);
             $this->paymentHelper->createPlentyPayment($requestData);
             $this->paymentHelper->updateOrderStatus((int)$requestData['order_no'], $requestData['order_status']);
             $this->paymentHelper->createOrderComments((int)$requestData['order_no'], $transactionComments);
