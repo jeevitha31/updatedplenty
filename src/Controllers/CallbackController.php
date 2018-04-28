@@ -206,6 +206,8 @@ class CallbackController extends Controller
         {
             $this->paramsRequired[] = 'tid_payment';
         }
+        //$orderlanguage = 
+        
     }
 
     /**
@@ -467,15 +469,16 @@ class CallbackController extends Controller
 		{ 
 			if(!empty($orderId))
 			{
-				
-				$authHelper = pluginApp(AuthHelper::class);
-				$order_ref = $authHelper->processUnguarded(
-                function () use ($orderId) {
-					$order_obj = $this->orderRepository->findOrderById($orderId);
+				$order_ref = $this->orderObject($orderId);
+				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
+				//~ $authHelper = pluginApp(AuthHelper::class);
+				//~ $order_ref = $authHelper->processUnguarded(
+                //~ function () use ($orderId) {
+					//~ $order_obj = $this->orderRepository->findOrderById($orderId);
 			
-					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
-					return $order_obj;
-				});
+					//~ $this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
+					//~ return $order_obj;
+				//~ });
 			
 				 
 				$this->handleCommunicationBreak($order_ref);
@@ -499,6 +502,19 @@ class CallbackController extends Controller
 
         return $orderObj;
     }
+    
+    public function orderObject($orderId)
+    {
+		$authHelper = pluginApp(AuthHelper::class);
+				$order_ref = $authHelper->processUnguarded(
+                function () use ($orderId) {
+					$order_obj = $this->orderRepository->findOrderById($orderId);
+			
+					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
+					return $order_obj;
+				});
+		
+	}
 
     /**
      * Get the callback payment level based on the payment type
@@ -643,7 +659,7 @@ class CallbackController extends Controller
 					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail', $transactionData);
 
 					}
-					$callbackComments = $this->paymentHelper->getTranslatedText('callback_success',$requestData['lang']). date('Y-m-d H:i:s');
+					$callbackComments = $this->paymentHelper->getTranslatedText('callback_handlecommunication',$requestData['lang']). date('Y-m-d H:i:s');
 					
 					
 				
