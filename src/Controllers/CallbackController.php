@@ -479,6 +479,7 @@ class CallbackController extends Controller
 			
 				 
 				$this->handleCommunicationBreak($order_ref);
+				return  $this->renderTemplate('communication break handled.');
 				//$this->getLogger(__METHOD__)->error('comment1', $order_ref);
 				//$this->getLogger(__METHOD__)->error('comment1', $callbackComments);
 				//i//f(is_string($callbackComments))
