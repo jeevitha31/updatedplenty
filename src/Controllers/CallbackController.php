@@ -658,7 +658,7 @@ class CallbackController extends Controller
 				return 'Novalnet callback received: Given payment type is not matched.';
 			}
 	}
-
+return $this->renderTemplate('Novalnet_callback script executed.');
 		
 	}
 	
