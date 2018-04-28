@@ -215,7 +215,7 @@ class CallbackController extends Controller
     public function processCallback()
     {
 	   $translator = pluginApp(Translator::class);
-       return $this->renderTemplate($translator->trans("Novalnet::PaymentMethod.cc_name",[],""));
+       return $this->renderTemplate($translator->trans("Novalnet::PaymentMethod.cc_name",[]," "));
         $displayTemplate = $this->validateIpAddress();
 
         if ($displayTemplate)
