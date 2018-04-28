@@ -147,6 +147,10 @@ class PaymentService
 			}
 
             $transactionComments = $this->getTransactionComments($requestData);
+            //~ if(isset($requestData['language']))
+            //~ {
+				//~ $
+			//~ }
              $this->getLogger(__METHOD__)->error('ExecutePayment response comment.', $transactionComments);
             $this->paymentHelper->createPlentyPayment($requestData);
             $this->paymentHelper->updateOrderStatus((int)$requestData['order_no'], $requestData['order_status']);
@@ -229,13 +233,16 @@ class PaymentService
      */
     public function getTransactionComments($requestData)
     {
+		$lang = strtolower((string)$requestData['lang']);
+	
         $comments  = '</br>' . $this->paymentHelper->getDisplayPaymentMethodName($requestData);
-        $comments .= '</br>' . $this->paymentHelper->getTranslatedText('nn_tid') . $requestData['tid'];
+        $comments .= '</br>' . $this->paymentHelper->getTranslatedText('nn_tid',$lang) . $requestData['tid'];
+         $this->getLogger(__METHOD__)->error('transaction comment', $comments);
 
         $paymentKey = strtolower((string) $this->paymentHelper->getPaymentKeyByMop($requestData['mop']));
         $testModeKey = 'Novalnet.' . $paymentKey . '_test_mode';
         if(!empty($requestData['test_mode']) || ($this->config->get($testModeKey) == 'true'))
-            $comments .= '</br>' . $this->paymentHelper->getTranslatedText('test_order');
+            $comments .= '</br>' . $this->paymentHelper->getTranslatedText('test_order',$lang);
 
         if(in_array($requestData['payment_id'], ['40','41']))
             $comments .= '</br>' . $this->paymentHelper->getTranslatedText('guarantee_text');
