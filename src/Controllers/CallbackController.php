@@ -608,7 +608,7 @@ class CallbackController extends Controller
 				$this->getLogger(__METHOD__)->error('checkrequestdata', $language);
 				$this->getLogger(__METHOD__)->error('checkrequestdata', $lan);
 				$requestData = $this->aryCaptureParams;
-				$requestData['language'] = $language; 
+				$requestData['lang'] = $language; 
 				$requestData['mop']= $property->value;
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 				$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
