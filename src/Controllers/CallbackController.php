@@ -639,11 +639,11 @@ class CallbackController extends Controller
 		
 	}
 	
-	public function getTranslatedText($key,$lang)
-	{
-		$translator = pluginApp(Translator::class);
-        return $translator->trans("Novalnet::PaymentMethod.$key",[],"$lang");
-	}
+	//public function getTranslatedText($key,$lang)
+	//{
+		//$translator = pluginApp(Translator::class);
+       // return $translator->trans("Novalnet::PaymentMethod.$key",[],"$lang");
+	//}
 
 	
 }
