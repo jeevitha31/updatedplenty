@@ -261,9 +261,9 @@ class CallbackController extends Controller
                 {
 					$orderNo =$this->transaction->getTransactionData('order_no', $this->aryCaptureParams['shop_tid']);
 					$this->getLogger(__METHOD__)->error('orderlang', $orderNo);
-			$orderob= $this->orderObject($orderNo); 
+			//$orderob= $this->orderObject($orderNo); 
 			$this->getLogger(__METHOD__)->error('orderlang', $orderob);
-					$orderLanguage= $this->orderLanguage($orderob);
+					//$orderLanguage= $this->orderLanguage($orderob);
 			
 					$this->getLogger(__METHOD__)->error('orderlang', $orderLanguage);
                     if($this->aryCaptureParams['subs_billing'] != 1)
@@ -543,6 +543,7 @@ $this->getLogger(__METHOD__)->error('orderlang3', $orderLanguage);
     
     public function orderObject($orderId)
     {
+	  $orderId = (int)$orderId;
 		$authHelper = pluginApp(AuthHelper::class);
 				$order_ref = $authHelper->processUnguarded(
                 function () use ($orderId) {
