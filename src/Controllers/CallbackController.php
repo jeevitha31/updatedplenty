@@ -541,7 +541,7 @@ class CallbackController extends Controller
 					return $order_obj;
 				});
 				
-				return $order_ref;
+				return "";
 		
 	}
 	public function orderLanguage($orderObj)
