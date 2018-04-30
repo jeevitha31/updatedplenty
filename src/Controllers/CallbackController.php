@@ -472,6 +472,7 @@ class CallbackController extends Controller
 		{ 
 			if(!empty($orderId))
 			{
+				$this->getLogger(__METHOD__)->error('communication failure order object', $orderId);
 				$order_ref = $this->orderObject($orderId);
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
 				if(empty($order_ref))
@@ -528,12 +529,13 @@ class CallbackController extends Controller
     public function orderObject($orderId)
     {
 		$orderId = (int)$orderId;
+	   $this->getLogger(__METHOD__)->error('communication failure order object1', $orderId);
 		$authHelper = pluginApp(AuthHelper::class);
 		$order_ref = $authHelper->processUnguarded(
 			function () use ($orderId) {
 				$order_obj = $this->orderRepository->findOrderById($orderId);
 				});
-				
+		 $this->getLogger(__METHOD__)->error('communication failure order object1', $order_ref);		
 		return $order_ref;
 	}
 	
