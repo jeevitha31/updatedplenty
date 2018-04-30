@@ -253,6 +253,10 @@ class CallbackController extends Controller
             {
                 return $this->renderTemplate($nnTransactionHistory);
             }
+	
+		$orderob= $this->orderObject($nnTransactionHistory['orderNo']); 
+		$this->getLogger(__METHOD__)->error('orderlang', $orderob);
+		$orderLanguage= $this->orderLanguage($orderob);
 
             if($this->getPaymentTypeLevel() == 2 && $this->aryCaptureParams['tid_status'] == '100')
             {
