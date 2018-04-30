@@ -688,7 +688,7 @@ class CallbackController extends Controller
 					$callbackComments = $this->paymentHelper->getTranslatedText('callback_handlecommunication',$requestData['lang']). date('Y-m-d H:i:s');
 				
 					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
-					$this->sendCallbackMail($callbackComments);
+					//$this->sendCallbackMail($callbackComments);
 					return $this->renderTemplate($callbackComments);
 					
 		
