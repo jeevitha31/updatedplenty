@@ -260,8 +260,11 @@ class CallbackController extends Controller
                 if(in_array($this->aryCaptureParams['payment_type'], ['INVOICE_CREDIT', 'CASHPAYMENT_CREDIT']) && $this->aryCaptureParams['tid_status'] == 100)
                 {
 					$orderNo =$this->transaction->getTransactionData('order_no', $this->aryCaptureParams['shop_tid']);
-					$orderobj= $this->orderObject($orderNo); 
-					$orderLanguage= $this->orderLanguage($orderobj);
+					$this->getLogger(__METHOD__)->error('orderlang', $orderNo);
+			$orderob= $this->orderObject($orderNo); 
+			$this->getLogger(__METHOD__)->error('orderlang', $orderob);
+					$orderLanguage= $this->orderLanguage($orderob);
+			
 					$this->getLogger(__METHOD__)->error('orderlang', $orderLanguage);
                     if($this->aryCaptureParams['subs_billing'] != 1)
                     {
@@ -479,8 +482,8 @@ $this->getLogger(__METHOD__)->error('orderlang3', $orderLanguage);
 				if(empty($order_ref))
 				{
 				$mailNotification = $this->build_notification_message();
-				
-				
+				$message = $mailNotification['message'];
+				$subject = $mailNotification['subject'];
 				
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['message']);
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['subject']);
@@ -488,8 +491,8 @@ $this->getLogger(__METHOD__)->error('orderlang3', $orderLanguage);
 				
 				
 				$mailer = pluginApp(MailerContract::class);
-               $mailer->sendHtml($mailNotification['message'],'jeevitha_k@novalnetsolutions.com',$mailNotification['subject'], "", "");
-                return $this->renderTemplate($mailnotification['message']);
+               $mailer->sendHtml($message,'jeevitha_k@novalnetsolutions.com',$subject,[],[]);
+                return $this->renderTemplate($mailNotification['message']);
 				}
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
 				//~ $authHelper = pluginApp(AuthHelper::class);
