@@ -362,11 +362,10 @@ class PaymentHelper
      * @param array $requestData
      * @return string
      */
-    public function getDisplayPaymentMethodName($requestData)
+    public function getDisplayPaymentMethodName($requestData,$lang)
     {
-		$lang = strtolower((string)$requestData['lang']);
 		
-		$this->getLogger(__METHOD__)->error('helper:language', $lang);
+	$this->getLogger(__METHOD__)->error('helper:language', $lang);
 		 
         if ($requestData['invoice_type'])
         {
