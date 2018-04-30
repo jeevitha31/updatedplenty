@@ -138,7 +138,7 @@ class PaymentHelper
             }
         }
         return 'no_paymentmethod_found';
-    }
+    }$lang
     
  
     /**
