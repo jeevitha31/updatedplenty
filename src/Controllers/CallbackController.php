@@ -254,10 +254,11 @@ class CallbackController extends Controller
                 return $this->renderTemplate($nnTransactionHistory);
             }
 	
-		$orderob= $this->orderObject($nnTransactionHistory['orderNo']); 
+		$this->getLogger(__METHOD__)->error('orderlangE', $nnTransactionHistory['orderNo']);
+		//$orderob= $this->orderObject($nnTransactionHistory['orderNo']); 
 		$this->getLogger(__METHOD__)->error('orderlangE', $orderob);
-		$orderLanguage= $this->orderLanguage($orderob);
-$this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
+		//$orderLanguage= $this->orderLanguage($orderob);
+//$this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
             if($this->getPaymentTypeLevel() == 2 && $this->aryCaptureParams['tid_status'] == '100')
             {
                 // Credit entry for the payment types Invoice, Prepayment and Cashpayment.
