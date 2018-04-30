@@ -473,9 +473,15 @@ class CallbackController extends Controller
 				if(empty($order_ref))
 				{
 				$mailnotification= $this->build_notification_message();
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification['message']);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification['subject']);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification->message);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification->subject);
+				
 				$this->getLogger(__METHOD__)->error('mailfn', $mailnotification);
-				$mailer = pluginApp(MailerContract::class);
-                $mailer->sendHtml($mailnotification['message'],'jeevitha_k@novalnetsolutions.com',$mailnotification['subject'], "", "");
+				//$mailer = pluginApp(MailerContract::class);
+              //  $mailer->sendHtml($mailnotification['message'],'jeevitha_k@novalnetsolutions.com',$mailnotification['subject'], "", "");
                 return $this->renderTemplate($mailnotification['message']);
 				}
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
@@ -535,7 +541,7 @@ class CallbackController extends Controller
 					return $order_obj;
 				});
 				
-				return '';
+				return $order_ref;
 		
 	}
 	public function orderLanguage($orderObj)
