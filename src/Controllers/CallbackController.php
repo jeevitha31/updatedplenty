@@ -253,12 +253,13 @@ class CallbackController extends Controller
             {
                 return $this->renderTemplate($nnTransactionHistory);
             }
+            
 	
 		$this->getLogger(__METHOD__)->error('orderlangE', $nnTransactionHistory->orderNo);
 		$orderob= $this->orderObject($nnTransactionHistory->orderNo); 
 		$this->getLogger(__METHOD__)->error('orderlangEEE', $orderob);
 		$orderLanguage= $this->orderLanguage($orderob);
-		//$orderLanguage= $this->orderLanguage($orderob);
+
 $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
             if($this->getPaymentTypeLevel() == 2 && $this->aryCaptureParams['tid_status'] == '100')
             {
@@ -279,7 +280,7 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
                         {
 							$this->getLogger(__METHOD__)->error('orderlang2', $orderLanguage);
                             $callbackComments  = '</br>';
-                            $callbackComments .= sprintf('Novalnet Callback Script executed successfully for the TID: %s with amount %s %s on %s. Please refer PAID transaction in our Novalnet Merchant Administration with the TID: %s', $this->aryCaptureParams['shop_tid'], ($this->aryCaptureParams['amount'] / 100), $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ).'</br>';
+                            $callbackComments .= sprintf($this->paymentHelper->getTranslatedText('callback_initial_execution',$orderLanguage), $this->aryCaptureParams['shop_tid'], ($this->aryCaptureParams['amount'] / 100), $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ).'</br>';
 
                             if($nnTransactionHistory->order_total_amount <= ($nnTransactionHistory->order_paid_amount + $this->aryCaptureParams['amount']))
                             {
@@ -295,7 +296,6 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
                             $paymentData['tid']         = $this->aryCaptureParams['tid'];
                             $paymentData['order_no']    = $nnTransactionHistory->orderNo;
                             $paymentData['mop']         = $nnTransactionHistory->mopId;
-$this->getLogger(__METHOD__)->error('orderlang3', $orderLanguage);
                             $this->paymentHelper->createPlentyPayment($paymentData);
                             $this->paymentHelper->createOrderComments($nnTransactionHistory->orderNo, $callbackComments);
                             $this->sendCallbackMail($callbackComments);
@@ -315,7 +315,7 @@ $this->getLogger(__METHOD__)->error('orderlang3', $orderLanguage);
             else if($this->getPaymentTypeLevel() == 1 && $this->aryCaptureParams['tid_status'] == 100)
             {
                 $callbackComments = '</br>';
-                $callbackComments .= (in_array($this->aryCaptureParams['payment_type'], ['CREDITCARD_BOOKBACK', 'PAYPAL_BOOKBACK', 'REFUND_BY_BANK_TRANSFER_EU', 'PRZELEWY24_REFUND', 'CASHPAYMENT_REFUND'])) ? sprintf(' Novalnet callback received. Refund/Bookback executed successfully for the TID: %s amount: %s %s on %s. The subsequent TID: %s.', $nnTransactionHistory->tid, sprintf('%0.2f', ($this->aryCaptureParams['amount']/100)) , $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ) . '</br>' : sprintf( ' Novalnet callback received. Chargeback executed successfully for the TID: %s amount: %s %s on %s. The subsequent TID: %s.', $nnTransactionHistory->tid, sprintf( '%0.2f',( $this->aryCaptureParams['amount']/100) ), $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ) . '</br>';
+                $callbackComments .= (in_array($this->aryCaptureParams['payment_type'], ['CREDITCARD_BOOKBACK', 'PAYPAL_BOOKBACK', 'REFUND_BY_BANK_TRANSFER_EU', 'PRZELEWY24_REFUND', 'CASHPAYMENT_REFUND'])) ? sprintf($this->paymentHelper->getTranslatedText('callback_bookback_execution',$orderLanguage), $nnTransactionHistory->tid, sprintf('%0.2f', ($this->aryCaptureParams['amount']/100)) , $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ) . '</br>' : sprintf( $this->paymentHelper->getTranslatedText('callback_chargeback_execution',$orderLanguage), $nnTransactionHistory->tid, sprintf( '%0.2f',( $this->aryCaptureParams['amount']/100) ), $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ) . '</br>';
 
                 $this->saveTransactionLog($nnTransactionHistory);
 
@@ -338,7 +338,7 @@ $this->getLogger(__METHOD__)->error('orderlang3', $orderLanguage);
                     if ($nnTransactionHistory->order_paid_amount < $nnTransactionHistory->order_total_amount)
                     {
                         $callbackComments  = '</br>';
-                        $callbackComments .= sprintf('Novalnet Callback Script executed successfully for the TID: %s with amount %s %s on %s. Please refer PAID transaction in our Novalnet Merchant Administration with the TID: %s', $this->aryCaptureParams['shop_tid'], ($this->aryCaptureParams['amount']/100), $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ).'</br>';
+                        $callbackComments .= sprintf($this->paymentHelper->getTranslatedText('callback_initial_execution',$orderLanguage), $this->aryCaptureParams['shop_tid'], ($this->aryCaptureParams['amount']/100), $this->aryCaptureParams['currency'], date('Y-m-d H:i:s'), $this->aryCaptureParams['tid'] ).'</br>';
 
                         $this->saveTransactionLog($nnTransactionHistory, true);
 
@@ -364,7 +364,7 @@ $this->getLogger(__METHOD__)->error('orderlang3', $orderLanguage);
                 elseif('PRZELEWY24' == $this->aryCaptureParams['payment_type'] && (!in_array($this->aryCaptureParams['tid_status'], ['100','86']) || '100' != $this->aryCaptureParams['status']))
                 {
                     // Przelewy24 cancel.
-                    $callbackComments = '</br>' . sprintf('The transaction has been canceled due to: %s',$this->paymentHelper->getNovalnetStatusText($this->aryCaptureParams) ) . '</br>';
+                    $callbackComments = '</br>' . sprintf($this->paymentHelper->getTranslatedText('callback_transaction_cancellation',$orderLanguage),$this->paymentHelper->getNovalnetStatusText($this->aryCaptureParams) ) . '</br>';
                     $orderStatus = (float) $this->config->get('Novalnet.order_cancel_status');
                     $this->paymentHelper->updateOrderStatus($nnTransactionHistory->orderNo, $orderStatus);
                     $this->paymentHelper->createOrderComments($nnTransactionHistory->orderNo, $callbackComments);
