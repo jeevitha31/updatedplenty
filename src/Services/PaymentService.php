@@ -233,9 +233,8 @@ class PaymentService
      */
     public function getTransactionComments($requestData)
     {
-		$lang = strtolower((string)$requestData['lang']);
-	
-        $comments  = '</br>' . $this->paymentHelper->getDisplayPaymentMethodName($requestData);
+	$lang = strtolower((string)$requestData['lang']);
+        $comments  = '</br>' . $this->paymentHelper->getDisplayPaymentMethodName($requestData,$lang);
         $comments .= '</br>' . $this->paymentHelper->getTranslatedText('nn_tid',$lang) . $requestData['tid'];
          $this->getLogger(__METHOD__)->error('transaction comment', $comments);
 
