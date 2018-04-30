@@ -254,9 +254,9 @@ class CallbackController extends Controller
                 return $this->renderTemplate($nnTransactionHistory);
             }
 	
-		this->getLogger(__METHOD__)->error('orderlangE', $nnTransactionHistory->orderNo);
-		$orderob= $this->orderObject($nnTransactionHistory->orderNo); 
-		$this->getLogger(__METHOD__)->error('orderlangE', $orderob);
+		this->getLogger(__METHOD__)->error('orderlangE', $nnTransactionHistory['orderNo']);
+		$orderob= $this->orderObject($nnTransactionHistory['orderNo']); 
+		$this->getLogger(__METHOD__)->error('orderlangEEE', $orderob);
 		$orderLanguage= $this->orderLanguage($orderob);
 		//$orderLanguage= $this->orderLanguage($orderob);
 $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
