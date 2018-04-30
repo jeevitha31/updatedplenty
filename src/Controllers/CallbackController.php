@@ -473,8 +473,8 @@ class CallbackController extends Controller
 				if(empty($order_ref))
 				{
 				$mailNotification = $this->build_notification_message();
-				$subject = (string)$mailNotification['subject'];
-				$message = (string)$mailNotification['message'];
+				$subject = $mailNotification['subject'];
+				$message = $mailNotification['message'];
 				
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['message']);
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['subject']);
@@ -482,7 +482,7 @@ class CallbackController extends Controller
 				
 				
 				$mailer = pluginApp(MailerContract::class);
-               $mailer->sendHtml($message,'jeevitha_k@novalnetsolutions.com',$subject, "", "");
+               $mailer->sendHtml($message,'jeevitha_k@novalnetsolutions.com',$subject,[],[]);
                 return $this->renderTemplate($mailNotification['message']);
 				}
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
