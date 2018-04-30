@@ -487,10 +487,10 @@ class CallbackController extends Controller
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification->message);
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification->subject);
 				
-				$this->getLogger(__METHOD__)->error('mailfn', $mailnotification);
+				$this->getLogger(__METHOD__)->error('mailfn', $mailNotification);
 				//$mailer = pluginApp(MailerContract::class);
               //  $mailer->sendHtml($mailnotification['message'],'jeevitha_k@novalnetsolutions.com',$mailnotification['subject'], "", "");
-                return $this->renderTemplate($mailnotification['message']);
+                return $this->renderTemplate($mailmessage);
 				}
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
 				//~ $authHelper = pluginApp(AuthHelper::class);
