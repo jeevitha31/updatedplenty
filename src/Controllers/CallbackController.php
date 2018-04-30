@@ -206,7 +206,6 @@ class CallbackController extends Controller
         {
             $this->paramsRequired[] = 'tid_payment';
         }
-        //$orderlanguage = 
         
     }
 
@@ -216,8 +215,6 @@ class CallbackController extends Controller
      */
     public function processCallback()
     {
-	   //$translator = pluginApp(Translator::class);
-       //return $this->renderTemplate($translator->trans("Novalnet::PaymentMethod.cc_name",[]," "));
         $displayTemplate = $this->validateIpAddress();
 
         if ($displayTemplate)
@@ -254,28 +251,19 @@ class CallbackController extends Controller
                 return $this->renderTemplate($nnTransactionHistory);
             }
             
-	
-		$this->getLogger(__METHOD__)->error('orderlangE', $nnTransactionHistory->orderNo);
-		$orderob= $this->orderObject($nnTransactionHistory->orderNo); 
-		$this->getLogger(__METHOD__)->error('orderlangEEE', $orderob);
-		$orderLanguage= $this->orderLanguage($orderob);
+			$orderObject = $this->orderObject($nnTransactionHistory->orderNo); 
+		
+			$orderLanguage= $this->orderLanguage($orderObject);
 
-$this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
+
             if($this->getPaymentTypeLevel() == 2 && $this->aryCaptureParams['tid_status'] == '100')
             {
                 // Credit entry for the payment types Invoice, Prepayment and Cashpayment.
                 if(in_array($this->aryCaptureParams['payment_type'], ['INVOICE_CREDIT', 'CASHPAYMENT_CREDIT']) && $this->aryCaptureParams['tid_status'] == 100)
                 {
-					//$orderNo =$this->transaction->getTransactionData('order_no', $this->aryCaptureParams['shop_tid']);
-					$this->getLogger(__METHOD__)->error('orderlang1', $nnTransactionHistory);
-			//$orderob= $this->orderObject($orderNo); 
-			//$this->getLogger(__METHOD__)->error('orderlang', $orderob);
-					//$orderLanguage= $this->orderLanguage($orderob);
 			
-					$this->getLogger(__METHOD__)->error('orderlang', $nnTransactionHistory);
                     if($this->aryCaptureParams['subs_billing'] != 1)
                     {
-						$this->getLogger(__METHOD__)->error('orderlang1', $orderLanguage);
                         if ($nnTransactionHistory->order_paid_amount < $nnTransactionHistory->order_total_amount)
                         {
 							$this->getLogger(__METHOD__)->error('orderlang2', $orderLanguage);
@@ -286,7 +274,7 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
                             {
                                 $paymentConfigName = substr($nnTransactionHistory->paymentName, 9);
                                 $orderStatus = $this->config->get('Novalnet.' . $paymentConfigName . '_callback_order_status');
-                                $this->paymentHelper->updateOrderStatus($nnTransactionHistory->orderNo, (float)$orderStatus);
+                                $thorderLanguageis->paymentHelper->updateOrderStatus($nnTransactionHistory->orderNo, (float)$orderStatus);
                             }
 
                             $this->saveTransactionLog($nnTransactionHistory);
@@ -487,81 +475,72 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
 				$order_ref = $this->orderObject($orderId);
 				if(empty($order_ref))
 				{
-				$mailNotification = $this->build_notification_message();
-				$message = $mailNotification['message'];
-				$subject = $mailNotification['subject'];
-				
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['message']);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['subject']);
-				
-				
-				
-				$mailer = pluginApp(MailerContract::class);
-               $mailer->sendHtml($message,'jeevitha_k@novalnetsolutions.com',$subject,[],[]);
-                return $this->renderTemplate($mailNotification['message']);
+					$mailNotification = $this->build_notification_message();
+					$message = $mailNotification['message'];
+					$subject = $mailNotification['subject'];
+					
+					$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['message']);
+					$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['subject']);
+					
+					$mailer = pluginApp(MailerContract::class);
+					$mailer->sendHtml($message,'jeevitha_k@novalnetsolutions.com',$subject,[],[]);
+					
+					return $this->renderTemplate($mailNotification['message']);
 				}
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
-				//~ $authHelper = pluginApp(AuthHelper::class);
-				//~ $order_ref = $authHelper->processUnguarded(
-                //~ function () use ($orderId) {
-					//~ $order_obj = $this->orderRepository->findOrderById($orderId);
 			
-					//~ $this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
-					//~ return $order_obj;
-				//~ });
-			
-				 
 				$this->handleCommunicationBreak($order_ref);
-				return  $this->renderTemplate('communication break handled.');
-				//$this->getLogger(__METHOD__)->error('comment1', $order_ref);
-				//$this->getLogger(__METHOD__)->error('comment1', $callbackComments);
-				//i//f(is_string($callbackComments))
-				//{//
-					//$this->getLogger(__METHOD__)->error('comment', $callbackComments);
-					
-					//$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
-					//$this->sendCallbackMail($callbackComments);
-					//return $this->renderTemplate($callbackComments);
-				//}
+				return  $this->renderTemplate('Novalnet handle communication break executed successfully.');
 			
 			}
 			else{
 					return 'Transaction mapping failed';
-				}
+			}
         }
 
         return $orderObj;
     }
     
-    function build_notification_message() {
-
-    $subject = 'Critical error on shop system plentymarkets:seo: order not found for TID: ' . $this->aryCaptureParams['shop_tid'];
-    $message = "Dear Technic team,<br/><br/>Please evaluate this transaction and contact our Technic team and Backend team at Novalnet.<br/><br/>";
-    foreach(array('vendor_id', 'product_id', 'tid', 'tid_payment', 'tid_status', 'order_no', 'payment_type', 'email') as $key) {
-        if (!empty($this->aryCaptureParams[$key])) {
-                            $message .= "$key: " . $this->aryCaptureParams[$key] . '<br/>';
-                    }
+    /**
+     * Build the mail subject and message for the Novalnet Technic Team
+     * 
+     * @return array
+     */
+    function build_notification_message() 
+    {
+		$subject = 'Critical error on shop system plentymarkets:seo: order not found for TID: ' . $this->aryCaptureParams['shop_tid'];
+		$message = "Dear Technic team,<br/><br/>Please evaluate this transaction and contact our Technic team and Backend team at Novalnet.<br/><br/>";
+		foreach(array('vendor_id', 'product_id', 'tid', 'tid_payment', 'tid_status', 'order_no', 'payment_type', 'email') as $key) {
+			if (!empty($this->aryCaptureParams[$key])) {
+				$message .= "$key: " . $this->aryCaptureParams[$key] . '<br/>';
+				}
     }
     
-    return array('subject'=>$subject, 'message'=>$message);
+		return array('subject'=>$subject, 'message'=>$message);
     }
 
-    
+    /**
+     * Retrieves the order object from shop order ID
+     *
+     * @return object
+     */
     public function orderObject($orderId)
     {
-	  $orderId = (int)$orderId;
+		$orderId = (int)$orderId;
 		$authHelper = pluginApp(AuthHelper::class);
-				$order_ref = $authHelper->processUnguarded(
-                function () use ($orderId) {
-					$order_obj = $this->orderRepository->findOrderById($orderId);
-			
-					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
-					return $order_obj;
+		$order_ref = $authHelper->processUnguarded(
+			function () use ($orderId) {
+				$order_obj = $this->orderRepository->findOrderById($orderId);
 				});
 				
-				return $order_ref;
-		
+		return $order_ref;
 	}
+	
+	/**
+     * Get the order language based on the order object
+     *
+     * @return string
+     */
 	public function orderLanguage($orderObj)
 	{
 		foreach($orderObj->properties as $property)
@@ -570,7 +549,6 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
 			{
 				$language = $property->value;
 		
-				$this->getLogger(__METHOD__)->error('checkrequestdata--language',$language);
 				return $language;
 			}
 	    }
@@ -611,7 +589,7 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
         $insertTransactionLog['ref_tid']         = $this->aryCaptureParams['tid'];
         $insertTransactionLog['payment_name']    = $txnHistory->paymentName;
         $insertTransactionLog['order_no']        = $txnHistory->orderNo;
- $this->getLogger(__METHOD__)->error('handlecommunication', $insertTransactionLog);
+        
         $this->transaction->saveTransaction($insertTransactionLog);
     }
 
@@ -664,24 +642,25 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
         return $this->twig->render('Novalnet::callback.callback', ['comments' => $templateData]);
     }
     
+    /**
+     * Handling communication breakup
+     *
+     * @param array $orderObj
+     * @return none
+	 */
     public function handleCommunicationBreak($orderObj)
-    
     {
-	    $orderlanguage = $this->orderLanguage($orderObj);
+	    $orderLanguage = $this->orderLanguage($orderObj);
 	    
 		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
+		
 		foreach($orderObj->properties as $property)
 		{
 			
 			if($property->typeId == '3' && $this->paymentHelper->isNovalnetPaymentMethod($property->value))
 			{
-				
-				
-			
-				$this->getLogger(__METHOD__)->error('checkrequestdata', $orderlanguage);
-				$this->getLogger(__METHOD__)->error('checkrequestdata', $lan);
 				$requestData = $this->aryCaptureParams;
-				$requestData['lang'] = $orderlanguage; 
+				$requestData['lang'] = $orderLanguage; 
 				$requestData['mop']= $property->value;
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 				$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
@@ -696,29 +675,18 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
 					
 				if($this->aryCaptureParams['status'] == '100' && in_array($this->aryCaptureParams['tid_status'],array(85,86,90,100)))
 				{
-					$this->getLogger(__METHOD__)->error('checkrequestdata', $requestData);
 					$this->paymentService->executePayment($requestData);
                     $this->saveTransactionLog($transactionData);
-					$this->getLogger(__METHOD__)->error('handlecommunication:status=100',$requestData);
-					$this->getLogger(__METHOD__)->error('handlecommunication:status=100', $transactionData);
 					
 				}
 				else{
 					$requestData['type'] = 'cancel';
 					$this->paymentService->executePayment($requestData,true);
 					$this->aryCaptureParams['amount'] = '0';
-					
-					 $this->saveTransactionLog($transactionData);
-					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail',$requestData);
-					$this->getLogger(__METHOD__)->error('handlecommunication:status=fail', $transactionData);
-
-					}
+					$this->saveTransactionLog($transactionData);
+				}
 					$callbackComments = $this->paymentHelper->getTranslatedText('callback_handlecommunication',$requestData['lang']). date('Y-m-d H:i:s');
-					
-					
 				
-				$this->getLogger(__METHOD__)->error('comment', $callbackComments);
-					
 					$this->paymentHelper->createOrderComments($this->aryCaptureParams['order_no'], $callbackComments);
 					$this->sendCallbackMail($callbackComments);
 					return $this->renderTemplate($callbackComments);
@@ -728,16 +696,9 @@ $this->getLogger(__METHOD__)->error('orderlangEE', $orderLanguage);
 					
 				return 'Novalnet callback received: Given payment type is not matched.';
 			}
-	}
-return $this->renderTemplate('Novalnet_callback script executed.');
+		}
 		
 	}
 	
-	//public function getTranslatedText($key,$lang)
-	//{
-		//$translator = pluginApp(Translator::class);
-       // return $translator->trans("Novalnet::PaymentMethod.$key",[],"$lang");
-	//}
-
 	
 }
