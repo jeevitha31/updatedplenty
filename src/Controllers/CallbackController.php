@@ -473,24 +473,17 @@ class CallbackController extends Controller
 				if(empty($order_ref))
 				{
 				$mailNotification = $this->build_notification_message();
-				foreach($mailNotification as $mailfn)
-				{
-					$mailsubject = $mailfn['subject'];
-					$mailmessage = $mailfn['message'];
-				}
 				
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailmessage);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailsubject);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification);
+				
+				
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['message']);
 				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['subject']);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification->message);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification->subject);
 				
-				$this->getLogger(__METHOD__)->error('mailfn', $mailNotification);
-				//$mailer = pluginApp(MailerContract::class);
-              //  $mailer->sendHtml($mailnotification['message'],'jeevitha_k@novalnetsolutions.com',$mailnotification['subject'], "", "");
-                return $this->renderTemplate($mailmessage);
+				
+				
+				$mailer = pluginApp(MailerContract::class);
+               $mailer->sendHtml($mailNotification['message'],'jeevitha_k@novalnetsolutions.com',$mailNotification['subject'], "", "");
+                return $this->renderTemplate($mailnotification['message']);
 				}
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
 				//~ $authHelper = pluginApp(AuthHelper::class);
