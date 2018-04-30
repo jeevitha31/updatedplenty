@@ -472,12 +472,20 @@ class CallbackController extends Controller
 				$order_ref = $this->orderObject($orderId);
 				if(empty($order_ref))
 				{
-				$mailnotification= $this->build_notification_message();
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification['message']);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification['subject']);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification->message);
-				$this->getLogger(__METHOD__)->error('mailnotification', $mailnotification->subject);
+				$mailNotification = $this->build_notification_message();
+				foreach($mailNotification as $mailfn)
+				{
+					$mailsubject = $mailfn['subject'];
+					$mailmessage = $mailfn['message'];
+				}
+				
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailmessage);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailsubject);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['message']);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification['subject']);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification->message);
+				$this->getLogger(__METHOD__)->error('mailnotification', $mailNotification->subject);
 				
 				$this->getLogger(__METHOD__)->error('mailfn', $mailnotification);
 				//$mailer = pluginApp(MailerContract::class);
@@ -526,7 +534,8 @@ class CallbackController extends Controller
                             $message .= "$key: " . $this->aryCaptureParams[$key] . '<br/>';
                     }
     }
-    return array($subject, $message);
+    
+    return array('subject'=>$subject, 'message'=>$message);
     }
 
     
