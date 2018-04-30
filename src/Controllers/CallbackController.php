@@ -274,7 +274,7 @@ class CallbackController extends Controller
                             {
                                 $paymentConfigName = substr($nnTransactionHistory->paymentName, 9);
                                 $orderStatus = $this->config->get('Novalnet.' . $paymentConfigName . '_callback_order_status');
-                                $thorderLanguageis->paymentHelper->updateOrderStatus($nnTransactionHistory->orderNo, (float)$orderStatus);
+                                $this->paymentHelper->updateOrderStatus($nnTransactionHistory->orderNo, (float)$orderStatus);
                             }
 
                             $this->saveTransactionLog($nnTransactionHistory);
