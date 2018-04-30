@@ -470,6 +470,14 @@ class CallbackController extends Controller
 			if(!empty($orderId))
 			{
 				$order_ref = $this->orderObject($orderId);
+				if(empty($order_ref))
+				{
+				$mailnotification= $this->build_notification_message();
+				$this->getLogger(__METHOD__)->error('mailfn', $mailnotification);
+				$mailer = pluginApp(MailerContract::class);
+                $mailer->sendHtml($mailnotification['message'],'jeevitha_k@novalnetsolutions.com',$mailnotification['subject'], "", "");
+                return $this->renderTemplate($mailnotification['message']);
+				}
 				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
 				//~ $authHelper = pluginApp(AuthHelper::class);
 				//~ $order_ref = $authHelper->processUnguarded(
@@ -503,6 +511,19 @@ class CallbackController extends Controller
         return $orderObj;
     }
     
+    function build_notification_message() {
+
+    $subject = 'Critical error on shop system plentymarkets:seo: order not found for TID: ' . $this->aryCaptureParams['shop_tid'];
+    $message = "Dear Technic team,<br/><br/>Please evaluate this transaction and contact our Technic team and Backend team at Novalnet.<br/><br/>";
+    foreach(array('vendor_id', 'product_id', 'tid', 'tid_payment', 'tid_status', 'order_no', 'payment_type', 'email') as $key) {
+        if (!empty($this->aryCaptureParams[$key])) {
+                            $message .= "$key: " . $this->aryCaptureParams[$key] . '<br/>';
+                    }
+    }
+    return array($subject, $message);
+    }
+
+    
     public function orderObject($orderId)
     {
 		$authHelper = pluginApp(AuthHelper::class);
@@ -513,8 +534,22 @@ class CallbackController extends Controller
 					$this->getLogger(__METHOD__)->error('callbackscript orderobject', $order_obj);
 					return $order_obj;
 				});
-	    return $order_ref;
+				
+				return $order_ref;
 		
+	}
+	public function orderLanguage($orderObj)
+	{
+		foreach($orderObj->properties as $property)
+		{
+			if($property->typeId == '6' )
+			{
+				$language = $property->value;
+		
+				$this->getLogger(__METHOD__)->error('checkrequestdata--language',$language);
+				return $language;
+			}
+	    }
 	}
 
     /**
@@ -608,14 +643,8 @@ class CallbackController extends Controller
     public function handleCommunicationBreak($orderObj)
     
     {
-	    foreach($orderObj->properties as $property)
-		{
-			if($property->typeId == '6' )
-			{
-				$language = $property->value;
-				$this->getLogger(__METHOD__)->error('checkrequestdata--language',$language);
-			}
-	    }
+	    $orderlanguage = $this->orderLanguage($orderObj);
+	    
 		if(in_array($this->aryCaptureParams['payment_type'],array('PAYPAL', 'ONLINE_TRANSFER', 'IDEAL', 'GIROPAY', 'PRZELEWY24', 'EPS','CREDITCARD')))
 		foreach($orderObj->properties as $property)
 		{
@@ -625,10 +654,10 @@ class CallbackController extends Controller
 				
 				
 			
-				$this->getLogger(__METHOD__)->error('checkrequestdata', $language);
+				$this->getLogger(__METHOD__)->error('checkrequestdata', $orderlanguage);
 				$this->getLogger(__METHOD__)->error('checkrequestdata', $lan);
 				$requestData = $this->aryCaptureParams;
-				$requestData['lang'] = $language; 
+				$requestData['lang'] = $orderlanguage; 
 				$requestData['mop']= $property->value;
 				$payment_type = (string)$this->paymentHelper->getPaymentKeyByMop($property->value);
 				$requestData['payment_id'] = $this->paymentService->getkeyByPaymentKey($payment_type); 
