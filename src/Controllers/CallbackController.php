@@ -473,6 +473,7 @@ class CallbackController extends Controller
 			if(!empty($orderId))
 			{
 				$order_ref = $this->orderObject($orderId);
+				$this->getLogger(__METHOD__)->error('communication failure order object', $order_ref);
 				if(empty($order_ref))
 				{
 					$mailNotification = $this->build_notification_message();
